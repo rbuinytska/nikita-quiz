@@ -13,23 +13,66 @@ export const StageBackground: React.FC = () => {
         inset: 0,
         zIndex: 0,
         pointerEvents: 'none',
+        overflow: 'hidden',
       }}
     >
-      {/* Spotlight beams — gentle, not overwhelming */}
-      <polygon className="beam" points="50,0 70,0 270,780 30,780" fill="#FFFFFF" opacity="0.45" />
-      <polygon className="beam beam2" points="185,0 205,0 310,780 80,780" fill="#E0167A" opacity="0.10" />
-      <polygon className="beam beam3" points="320,0 340,0 360,780 120,780" fill="#7FC8F8" opacity="0.20" />
+      <defs>
+        {/* Smooth vertical fade for spotlight beams - eliminates sharp cuts at top and bottom */}
+        <linearGradient id="beamFadeWhite" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0" />
+          <stop offset="12%" stopColor="#FFFFFF" stopOpacity="0.35" />
+          <stop offset="75%" stopColor="#FFFFFF" stopOpacity="0.25" />
+          <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
+        </linearGradient>
 
-      {/* Stage light ellipse at bottom */}
-      <ellipse cx="195" cy="844" rx="230" ry="70" fill="#FFFFFF" opacity="0.35" />
+        <linearGradient id="beamFadePink" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#E0167A" stopOpacity="0" />
+          <stop offset="12%" stopColor="#E0167A" stopOpacity="0.10" />
+          <stop offset="75%" stopColor="#E0167A" stopOpacity="0.08" />
+          <stop offset="100%" stopColor="#E0167A" stopOpacity="0" />
+        </linearGradient>
 
-      {/* Top stage lights fixtures */}
-      <rect x="44" y="-8" width="32" height="20" rx="5" fill="#1A1020" />
-      <rect x="179" y="-8" width="32" height="20" rx="5" fill="#1A1020" />
-      <rect x="314" y="-8" width="32" height="20" rx="5" fill="#1A1020" />
-      <circle cx="60" cy="14" r="5" fill="#FFFFFF" />
-      <circle cx="195" cy="14" r="5" fill="#FFFFFF" />
-      <circle cx="330" cy="14" r="5" fill="#FFFFFF" />
+        <linearGradient id="beamFadeBlue" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#7FC8F8" stopOpacity="0" />
+          <stop offset="12%" stopColor="#7FC8F8" stopOpacity="0.18" />
+          <stop offset="75%" stopColor="#7FC8F8" stopOpacity="0.12" />
+          <stop offset="100%" stopColor="#7FC8F8" stopOpacity="0" />
+        </linearGradient>
+
+        {/* Soft edge blur filter for realistic light diffusion */}
+        <filter id="softBeamBlur" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="8" />
+        </filter>
+
+        <radialGradient id="stageBottomGlow" cx="50%" cy="100%" r="70%">
+          <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.3" />
+          <stop offset="60%" stopColor="#FFFFFF" stopOpacity="0.1" />
+          <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
+        </radialGradient>
+      </defs>
+
+      {/* Spotlight beams — smoothly extended past top and bottom with blurred edges and gradient dissolve */}
+      <polygon
+        className="beam"
+        points="30,-120 90,-120 330,1050 -10,1050"
+        fill="url(#beamFadeWhite)"
+        filter="url(#softBeamBlur)"
+      />
+      <polygon
+        className="beam beam2"
+        points="160,-120 220,-120 390,1050 50,1050"
+        fill="url(#beamFadePink)"
+        filter="url(#softBeamBlur)"
+      />
+      <polygon
+        className="beam beam3"
+        points="290,-120 350,-120 440,1050 110,1050"
+        fill="url(#beamFadeBlue)"
+        filter="url(#softBeamBlur)"
+      />
+
+      {/* Soft ambient floor light */}
+      <ellipse cx="195" cy="844" rx="250" ry="120" fill="url(#stageBottomGlow)" />
 
       {/* Decorative sparkles */}
       <path className="tw" d="M340 410 l3 8 8 3 -8 3 -3 8 -3 -8 -8 -3 8 -3 Z" fill="#FFFFFF" />

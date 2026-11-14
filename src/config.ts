@@ -14,10 +14,10 @@ export const appConfig: AppConfig = {
   },
   playlist: [
     {
-      id: 'birthday-vibe',
-      title: 'Праздничный вайб',
-      artist: 'Party Vibe',
-      src: 'audio/birthday-vibe.mp3'
+      id: 'slayyyter-brand-new-chanel',
+      title: 'brand new chanel$',
+      artist: 'Slayyyter',
+      src: 'audio/slayyyter-brand-new-chanel.m4a'
     }
   ]
 };

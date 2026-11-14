@@ -650,15 +650,22 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
                 flexShrink: 0,
                 borderRadius: '26px',
                 background: '#E0167A',
+                fontSize: question.id === 10 ? '26px' : 'inherit',
               }}
             >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="9" y="3" width="6" height="11" rx="3" />
-                <path d="M5 11a7 7 0 0 0 14 0M12 18v3" />
-              </svg>
+              {question.id === 10 ? (
+                '🫦'
+              ) : (
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="9" y="3" width="6" height="11" rx="3" />
+                  <path d="M5 11a7 7 0 0 0 14 0M12 18v3" />
+                </svg>
+              )}
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-              <div style={{ fontWeight: 900, fontSize: '17px' }}>Отвечай вслух</div>
+              <div style={{ fontWeight: 900, fontSize: '17px' }}>
+                {question.id === 10 ? 'Покажи стикер' : 'Отвечай вслух'}
+              </div>
               <div style={{ fontSize: '14px', fontWeight: 600, lineHeight: 1.35, color: '#5C3A4E' }}>
                 {question.voicePrompt}
               </div>
@@ -672,6 +679,10 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '10px' }}>
               <button
                 type="button"
+                onPointerDown={(e) => {
+                  e.preventDefault();
+                  handleVoiceDecision(false);
+                }}
                 onClick={() => handleVoiceDecision(false)}
                 style={{
                   display: 'flex',
@@ -684,12 +695,17 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
                   color: '#1A1020',
                   fontWeight: 800,
                   fontSize: '16px',
+                  cursor: 'pointer',
                 }}
               >
                 Мимо
               </button>
               <button
                 type="button"
+                onPointerDown={(e) => {
+                  e.preventDefault();
+                  handleVoiceDecision(true);
+                }}
                 onClick={() => handleVoiceDecision(true)}
                 style={{
                   display: 'flex',
@@ -702,6 +718,8 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
                   color: '#FFFFFF',
                   fontWeight: 800,
                   fontSize: '16px',
+                  cursor: 'pointer',
+                  boxShadow: '0 8px 24px rgba(224, 22, 122, 0.35)',
                 }}
               >
                 Засчитано

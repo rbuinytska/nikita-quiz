@@ -101,25 +101,15 @@ export const questionsData: QuestionItem[] = [
   },
   {
     id: 10,
-    type: 'text',
+    type: 'voice',
     badge: 'вайб',
     media: {
       photo: '/assets/q10.jpg',
       revealAfterAnswer: '/assets/q10-sticker.png'
     },
     question: 'Какой стикер описывает этот вечер?',
-    placeholder: 'Опиши стикер словами',
-    answer: 'губы',
-    aliases: [
-      'губа',
-      'кусает губу',
-      'закусанная губа',
-      'закусывает губу',
-      'прикусила губу',
-      'прикусывает губу',
-      'lips'
-    ],
-    note: 'Засчитывать, если в ответе есть слово «губ» в любой форме.'
+    voicePrompt: 'Найди и покажи друзьям стикер или эмодзи на телефоне. Жюри решит, попал ли ты в точку!',
+    revealText: 'Тот самый легендарный стикер 🫦'
   },
   {
     id: 11,

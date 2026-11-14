@@ -9,6 +9,7 @@ interface ReactionScreenProps {
   totalQuestions: number;
   isCorrect: boolean;
   onNext: () => void;
+  onRestart?: () => void;
 }
 
 const CORRECT_TITLES = [
@@ -33,6 +34,7 @@ export const ReactionScreen: React.FC<ReactionScreenProps> = ({
   totalQuestions,
   isCorrect,
   onNext,
+  onRestart,
 }) => {
   // Pick random title deterministically for this question
   const title = useMemo(() => {
@@ -78,8 +80,36 @@ export const ReactionScreen: React.FC<ReactionScreenProps> = ({
       {/* Progress header */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', padding: '0 4px', zIndex: 2 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div style={{ fontSize: '13px', fontWeight: 800, letterSpacing: '0.16em', textTransform: 'uppercase' }}>
-            Проверка на входе
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            {onRestart && (
+              <button
+                type="button"
+                onClick={() => {
+                  if (window.confirm('Начать квиз сначала?')) {
+                    onRestart();
+                  }
+                }}
+                title="Начать сначала"
+                style={{
+                  background: 'rgba(26, 16, 32, 0.08)',
+                  border: '1px solid rgba(26, 16, 32, 0.15)',
+                  borderRadius: '999px',
+                  padding: '4px 10px',
+                  fontSize: '11px',
+                  fontWeight: 800,
+                  color: '#5C3A4E',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                }}
+              >
+                ↺ Сначала
+              </button>
+            )}
+            <div style={{ fontSize: '13px', fontWeight: 800, letterSpacing: '0.16em', textTransform: 'uppercase' }}>
+              Проверка на входе
+            </div>
           </div>
           <div style={{ fontSize: '15px', fontWeight: 900 }}>
             {currentIndex + 1} / {totalQuestions}

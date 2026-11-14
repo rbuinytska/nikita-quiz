@@ -118,6 +118,7 @@ export const App: React.FC = () => {
             currentIndex={currentQuestionIndex}
             totalQuestions={questionsData.length}
             onAnswer={handleAnswer}
+            onRestart={handleReset}
           />
         )}
 
@@ -128,6 +129,7 @@ export const App: React.FC = () => {
             totalQuestions={questionsData.length}
             isCorrect={lastAnswerCorrect}
             onNext={handleNextFromReaction}
+            onRestart={handleReset}
           />
         )}
 

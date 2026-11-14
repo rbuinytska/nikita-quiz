@@ -9,6 +9,7 @@ interface QuestionScreenProps {
   currentIndex: number;
   totalQuestions: number;
   onAnswer: (isCorrect: boolean, userAnswer: any) => void;
+  onRestart?: () => void;
 }
 
 export const QuestionScreen: React.FC<QuestionScreenProps> = ({
@@ -16,6 +17,7 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
   currentIndex,
   totalQuestions,
   onAnswer,
+  onRestart,
 }) => {
   // Local state for various question types
   const [textInput, setTextInput] = useState('');
@@ -108,10 +110,38 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
       <StageBackground />
 
       {/* Progress header */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', padding: '0 4px', zIndex: 2 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-          <div style={{ fontSize: '13px', fontWeight: 800, letterSpacing: '0.16em', textTransform: 'uppercase' }}>
-            Вопрос {currentIndex + 1}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', padding: '0 4px', zIndex: 10 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            {onRestart && (
+              <button
+                type="button"
+                onClick={() => {
+                  if (window.confirm('Начать квиз сначала?')) {
+                    onRestart();
+                  }
+                }}
+                title="Начать сначала"
+                style={{
+                  background: 'rgba(26, 16, 32, 0.08)',
+                  border: '1px solid rgba(26, 16, 32, 0.15)',
+                  borderRadius: '999px',
+                  padding: '4px 10px',
+                  fontSize: '11px',
+                  fontWeight: 800,
+                  color: '#5C3A4E',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                }}
+              >
+                ↺ Сначала
+              </button>
+            )}
+            <div style={{ fontSize: '13px', fontWeight: 800, letterSpacing: '0.16em', textTransform: 'uppercase' }}>
+              Вопрос {currentIndex + 1}
+            </div>
           </div>
           <div style={{ fontSize: '15px', fontWeight: 900 }}>
             {currentIndex + 1} / {totalQuestions}

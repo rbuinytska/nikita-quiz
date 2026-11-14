@@ -28,7 +28,6 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
   const [selectedChoice, setSelectedChoice] = useState<number | null>(null);
   const [matchPairs, setMatchPairs] = useState<Record<string, number>>({});
   const [photoRevealed, setPhotoRevealed] = useState(initialPhotoRevealed);
-  const [isInputFocused, setIsInputFocused] = useState(false);
 
   // Reset local state when question changes
   useEffect(() => {
@@ -36,20 +35,7 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
     setSelectedChoice(null);
     setMatchPairs({});
     setPhotoRevealed(initialPhotoRevealed);
-    setIsInputFocused(false);
   }, [question.id, initialPhotoRevealed]);
-
-  useEffect(() => {
-    if (!isInputFocused) return;
-    const preventScroll = () => {
-      window.scrollTo(0, 0);
-      if (containerRef.current) {
-        containerRef.current.scrollTop = 0;
-      }
-    };
-    window.addEventListener('scroll', preventScroll, { passive: true });
-    return () => window.removeEventListener('scroll', preventScroll);
-  }, [isInputFocused]);
 
   const progressPercent = Math.round(((currentIndex + 1) / totalQuestions) * 100);
 
@@ -136,14 +122,12 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
         boxSizing: 'border-box',
         background: '#FFD6EA',
         color: '#1A1020',
-        padding: isInputFocused
-          ? 'max(10px, env(safe-area-inset-top, 10px)) 20px 16px'
-          : 'max(16px, env(safe-area-inset-top, 16px)) 20px calc(24px + env(safe-area-inset-bottom, 16px))',
+        padding: 'max(14px, env(safe-area-inset-top, 14px)) 20px calc(20px + env(safe-area-inset-bottom, 16px))',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: isInputFocused ? 'flex-start' : 'space-between',
-        gap: isInputFocused ? '8px' : '14px',
-        overflowY: isInputFocused ? 'hidden' : 'auto',
+        justifyContent: 'space-between',
+        gap: '12px',
+        overflowY: 'auto',
         overflowX: 'hidden',
         position: 'relative',
         zIndex: 1,
@@ -216,18 +200,21 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
           style={{
             position: 'relative',
             alignSelf: question.media.orientation === 'portrait' ? 'center' : 'stretch',
-            width: question.media.orientation === 'portrait' ? (isInputFocused ? '120px' : '180px') : 'auto',
-            height: isInputFocused
-              ? (question.media.orientation === 'portrait' ? '150px' : '130px')
-              : (question.type === 'match' ? '150px' : question.media.orientation === 'portrait' ? '290px' : '230px'),
+            width: question.media.orientation === 'portrait' ? '180px' : 'auto',
+            height: question.type === 'match'
+              ? '140px'
+              : question.type === 'text' || question.type === 'hidden_photo_text'
+              ? '210px'
+              : question.media.orientation === 'portrait'
+              ? '270px'
+              : '220px',
             flexShrink: 0,
             boxSizing: 'border-box',
             borderRadius: '22px',
             background: '#1A1020',
             padding: '7px',
             boxShadow: '0 14px 30px rgba(26, 16, 32, 0.18)',
-            transform: isInputFocused ? 'rotate(0deg)' : 'rotate(-1.5deg)',
-            transition: 'all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1)',
+            transform: 'rotate(-1.5deg)',
             zIndex: 2,
           }}
         >
@@ -338,9 +325,8 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
           margin: '4px 4px 0',
           fontStyle: 'italic',
           fontWeight: 900,
-          fontSize: isInputFocused ? '19px' : (question.question.length > 50 ? '24px' : '30px'),
+          fontSize: question.question.length > 50 ? '24px' : '28px',
           lineHeight: 1.15,
-          transition: 'font-size 0.2s ease',
           zIndex: 2,
         }}
       >
@@ -368,16 +354,6 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
               type="text"
               value={textInput}
               onChange={(e) => setTextInput(e.target.value)}
-              onFocus={() => {
-                setIsInputFocused(true);
-                if (containerRef.current) {
-                  containerRef.current.scrollTop = 0;
-                }
-                window.scrollTo(0, 0);
-              }}
-              onBlur={() => {
-                setIsInputFocused(false);
-              }}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') handleTextSubmit();
               }}
@@ -385,9 +361,9 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
               autoComplete="off"
               style={{
                 width: '100%',
-                height: isInputFocused ? '50px' : '60px',
+                height: '56px',
                 boxSizing: 'border-box',
-                padding: '0 56px 0 20px',
+                padding: '0 54px 0 18px',
                 borderRadius: '18px',
                 border: '2px solid #1A1020',
                 background: '#FFFFFF',
@@ -395,7 +371,6 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
                 fontSize: '18px',
                 fontWeight: 700,
                 outlineColor: '#E0167A',
-                transition: 'height 0.2s ease',
               }}
             />
             <button
@@ -408,8 +383,8 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
                 right: '7px',
                 top: '50%',
                 transform: 'translateY(-50%)',
-                width: isInputFocused ? '38px' : '46px',
-                height: isInputFocused ? '38px' : '46px',
+                width: '42px',
+                height: '42px',
                 borderRadius: '50%',
                 border: 0,
                 background: textInput.trim() ? '#E0167A' : '#F5BCCD',
@@ -419,7 +394,7 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
                 justifyContent: 'center',
                 cursor: textInput.trim() ? 'pointer' : 'not-allowed',
                 boxShadow: textInput.trim() ? '0 4px 12px rgba(224, 22, 122, 0.4)' : 'none',
-                transition: 'all 0.2s ease',
+                transition: 'background 0.2s ease',
               }}
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">

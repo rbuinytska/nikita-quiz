@@ -28,6 +28,7 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
   const [selectedChoice, setSelectedChoice] = useState<number | null>(null);
   const [matchPairs, setMatchPairs] = useState<Record<string, number>>({});
   const [photoRevealed, setPhotoRevealed] = useState(initialPhotoRevealed);
+  const [isInputFocused, setIsInputFocused] = useState(false);
 
   // Reset local state when question changes
   useEffect(() => {
@@ -35,6 +36,7 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
     setSelectedChoice(null);
     setMatchPairs({});
     setPhotoRevealed(initialPhotoRevealed);
+    setIsInputFocused(false);
   }, [question.id, initialPhotoRevealed]);
 
   const progressPercent = Math.round(((currentIndex + 1) / totalQuestions) * 100);
@@ -125,7 +127,7 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
         padding: 'max(14px, env(safe-area-inset-top, 14px)) 20px calc(20px + env(safe-area-inset-bottom, 16px))',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'space-between',
+        justifyContent: 'flex-start',
         gap: '12px',
         overflowY: 'auto',
         overflowX: 'hidden',
@@ -200,14 +202,16 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
           style={{
             position: 'relative',
             alignSelf: question.media.orientation === 'portrait' ? 'center' : 'stretch',
-            width: question.media.orientation === 'portrait' ? '180px' : 'auto',
-            height: question.type === 'match'
-              ? '140px'
-              : question.type === 'text' || question.type === 'hidden_photo_text'
-              ? '210px'
-              : question.media.orientation === 'portrait'
-              ? '270px'
-              : '220px',
+            width: question.media.orientation === 'portrait' ? (isInputFocused ? '130px' : '180px') : 'auto',
+            height: isInputFocused
+              ? (question.media.orientation === 'portrait' ? '135px' : '115px')
+              : (question.type === 'match'
+                ? '140px'
+                : question.type === 'text' || question.type === 'hidden_photo_text'
+                ? '230px'
+                : question.media.orientation === 'portrait'
+                ? '270px'
+                : '220px'),
             flexShrink: 0,
             boxSizing: 'border-box',
             borderRadius: '22px',
@@ -215,6 +219,7 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
             padding: '7px',
             boxShadow: '0 14px 30px rgba(26, 16, 32, 0.18)',
             transform: 'rotate(-1.5deg)',
+            transition: 'height 0.28s ease, width 0.28s ease',
             zIndex: 2,
           }}
         >
@@ -354,6 +359,8 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
               type="text"
               value={textInput}
               onChange={(e) => setTextInput(e.target.value)}
+              onFocus={() => setIsInputFocused(true)}
+              onBlur={() => setIsInputFocused(false)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') handleTextSubmit();
               }}

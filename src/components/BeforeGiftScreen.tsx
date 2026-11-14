@@ -196,3 +196,4 @@ export const BeforeGiftScreen: React.FC<BeforeGiftScreenProps> = ({ onOpen }) =>
     </div>
   );
 };
+

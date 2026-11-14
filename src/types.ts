@@ -26,6 +26,13 @@ export interface QuestionItem {
   note?: string;
 }
 
+export interface Track {
+  id: string;
+  title: string;
+  artist?: string;
+  src: string;
+}
+
 export interface AppConfig {
   recipientName: string;
   eventDate: string;
@@ -38,6 +45,7 @@ export interface AppConfig {
     airfield: string;
     certificateNumber: string;
   };
+  playlist: Track[];
 }
 
 export type ScreenState = 

@@ -261,3 +261,4 @@ export const TicketScreen: React.FC<TicketScreenProps> = ({ onRestart }) => {
     </div>
   );
 };
+

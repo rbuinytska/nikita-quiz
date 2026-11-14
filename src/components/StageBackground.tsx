@@ -71,3 +71,4 @@ export const StageBackground: React.FC<StageBackgroundProps> = ({
     </svg>
   );
 };
+

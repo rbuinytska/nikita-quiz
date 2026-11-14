@@ -242,3 +242,4 @@ export const PlaneShakeScreen: React.FC<PlaneShakeScreenProps> = ({ onFinish }) 
     </div>
   );
 };
+

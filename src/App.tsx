@@ -8,6 +8,7 @@ import { BeforeGiftScreen } from './components/BeforeGiftScreen';
 import { PlaneShakeScreen } from './components/PlaneShakeScreen';
 import { ParachuteDropScreen } from './components/ParachuteDropScreen';
 import { TicketScreen } from './components/TicketScreen';
+import { BackgroundMusic } from './components/BackgroundMusic';
 
 const STORAGE_KEY = 'nikita_quiz_progress_v1';
 
@@ -99,6 +100,9 @@ export const App: React.FC = () => {
   return (
     <div className="app-container">
       <div className="mobile-frame">
+        {/* Floating background music controller */}
+        <BackgroundMusic />
+
         {screen === 'welcome' && (
           <WelcomeScreen
             onStart={() => setScreen('question')}

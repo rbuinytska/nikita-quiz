@@ -179,3 +179,4 @@ export const ParachuteDropScreen: React.FC<ParachuteDropScreenProps> = ({ onView
     </div>
   );
 };
+

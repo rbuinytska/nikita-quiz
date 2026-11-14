@@ -251,3 +251,4 @@ export const questionsData: QuestionItem[] = [
     voicePrompt: 'Произнеси вслух своё финальное согласие перед открытием главного подарка!'
   }
 ];
+

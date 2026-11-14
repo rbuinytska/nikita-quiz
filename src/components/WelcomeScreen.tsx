@@ -295,3 +295,4 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
     </div>
   );
 };
+

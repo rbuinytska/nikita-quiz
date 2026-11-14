@@ -80,7 +80,7 @@ export const questionsData: QuestionItem[] = [
     question: 'Кто отказался пойти с тобой на свидание на кофе?',
     placeholder: 'Имя и фамилия',
     answer: 'Jakub Svec',
-    aliases: ['Jakub Švec', 'Якуб Швец', 'Якуб Свец', 'Svec', 'Švec', 'Швец'],
+    aliases: ['Jakub Švec', 'Якуб Швец', 'Якуб Свец', 'Jakub', 'Якуб', 'Kuba', 'Куба', 'Svec', 'Švec', 'Швец', 'Свец', 'Швецык'],
     revealText: 'Точно. Это был Jakub Svec'
   },
   {

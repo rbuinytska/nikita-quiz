@@ -24,6 +24,7 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
   const [selectedChoice, setSelectedChoice] = useState<number | null>(null);
   const [matchPairs, setMatchPairs] = useState<Record<string, number>>({});
   const [photoRevealed, setPhotoRevealed] = useState(false);
+  const [photoAnswerCorrect, setPhotoAnswerCorrect] = useState<boolean | null>(null);
 
   // Reset local state when question changes
   useEffect(() => {
@@ -31,6 +32,7 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
     setSelectedChoice(null);
     setMatchPairs({});
     setPhotoRevealed(false);
+    setPhotoAnswerCorrect(null);
   }, [question.id]);
 
   const progressPercent = Math.round(((currentIndex + 1) / totalQuestions) * 100);
@@ -40,6 +42,13 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
     if (!textInput.trim()) return;
 
     if (question.type === 'hidden_photo_text' && !photoRevealed) {
+      const isCorrect = checkTextAnswer(
+        textInput,
+        question.answer,
+        question.aliases,
+        question.id
+      );
+      setPhotoAnswerCorrect(isCorrect);
       setPhotoRevealed(true);
       return;
     }
@@ -334,8 +343,12 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
               boxSizing: 'border-box',
               padding: '0 20px',
               borderRadius: '18px',
-              border: photoRevealed ? '2px solid #1F9D55' : '2px solid #1A1020',
-              background: photoRevealed ? '#E8F7EE' : '#FFFFFF',
+              border: photoRevealed
+                ? (photoAnswerCorrect ? '2px solid #1F9D55' : '2px solid #E0167A')
+                : '2px solid #1A1020',
+              background: photoRevealed
+                ? (photoAnswerCorrect ? '#E8F7EE' : '#FFE9F3')
+                : '#FFFFFF',
               color: '#1A1020',
               fontSize: '18px',
               fontWeight: 700,
@@ -364,10 +377,16 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
             </div>
           )}
 
-          {photoRevealed && question.revealText ? (
-            <div style={{ fontSize: '14px', fontWeight: 800, color: '#1F9D55' }}>
-              ✓ {question.revealText}
-            </div>
+          {photoRevealed ? (
+            photoAnswerCorrect ? (
+              <div style={{ fontSize: '14px', fontWeight: 800, color: '#1F9D55' }}>
+                ✓ {question.revealText || `Точно. Это был ${question.answer}`}
+              </div>
+            ) : (
+              <div style={{ fontSize: '14px', fontWeight: 800, color: '#E0167A' }}>
+                ✗ Мимо! На самом деле это {question.answer}
+              </div>
+            )
           ) : (
             <div style={{ fontSize: '13px', fontWeight: 600, color: '#5C3A4E' }}>
               Большие или маленькие буквы — неважно
@@ -611,8 +630,7 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
             <button
               type="button"
               onClick={() => {
-                const isCorrect = checkTextAnswer(textInput, question.answer, question.aliases, question.id);
-                onAnswer(isCorrect, textInput);
+                onAnswer(Boolean(photoAnswerCorrect), textInput);
               }}
               style={{
                 width: '100%',

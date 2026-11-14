@@ -36,7 +36,7 @@
 
     { "id": 7, "type": "hidden_photo_text", "media": { "photo": "assets/q07.jpg" },
       "question": "Кто отказался пойти с тобой на свидание на кофе?",
-      "answer": "Jakub Svec", "aliases": ["Jakub Švec", "Якуб Швец", "Якуб Свец", "Svec", "Švec", "Швец"],
+      "answer": "Jakub Svec", "aliases": ["Jakub Švec", "Якуб Швец", "Якуб Свец", "Jakub", "Якуб", "Kuba", "Куба", "Svec", "Švec", "Швец", "Свец", "Швецык"],
       "revealText": "Точно. Это был Jakub Svec" },
 
     { "id": 8, "type": "voice", "media": { "photo": "assets/q08.jpg" },

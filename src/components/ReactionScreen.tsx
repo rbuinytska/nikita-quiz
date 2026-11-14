@@ -97,12 +97,45 @@ export const ReactionScreen: React.FC<ReactionScreenProps> = ({
                 ↺ Сначала
               </button>
             )}
-            <div style={{ fontSize: '13px', fontWeight: 800, letterSpacing: '0.16em', textTransform: 'uppercase' }}>
+            <div style={{ fontSize: '13px', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
               Проверка на входе
             </div>
           </div>
-          <div style={{ fontSize: '15px', fontWeight: 900 }}>
-            {currentIndex + 1} / {totalQuestions}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div style={{ fontSize: '13px', fontWeight: 800, color: '#5C3A4E' }}>
+              {currentIndex + 1} / {totalQuestions}
+            </div>
+            <button
+              type="button"
+              onClick={onNext}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '5px',
+                padding: '5px 12px',
+                borderRadius: '999px',
+                border: 0,
+                background: isCorrect ? '#E0167A' : '#1A1020',
+                color: '#FFFFFF',
+                fontSize: '12px',
+                fontWeight: 800,
+                cursor: 'pointer',
+                boxShadow: isCorrect ? '0 3px 10px rgba(224, 22, 122, 0.35)' : '0 3px 10px rgba(26, 16, 32, 0.25)',
+                transition: 'all 0.2s ease',
+              }}
+            >
+              <span>{isCorrect ? 'Дальше' : 'Снова'}</span>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
+                {isCorrect ? (
+                  <path d="M5 12h14M13 6l6 6-6 6" />
+                ) : (
+                  <>
+                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                    <path d="M3 3v5h5" />
+                  </>
+                )}
+              </svg>
+            </button>
           </div>
         </div>
         <div
@@ -145,18 +178,18 @@ export const ReactionScreen: React.FC<ReactionScreenProps> = ({
           className="bob"
           style={{
             position: 'relative',
-            width: '210px',
-            height: '190px',
+            width: '180px',
+            height: '160px',
           }}
         >
           {/* Circular photo of Nikita */}
           <div
             style={{
-              width: '96px',
-              height: '96px',
+              width: '82px',
+              height: '82px',
               flexShrink: 0,
               boxSizing: 'border-box',
-              borderRadius: '48px',
+              borderRadius: '41px',
               border: '3px solid #FFFFFF',
               background: '#FFE9F3',
               boxShadow: '0 6px 16px rgba(26, 16, 32, 0.2)',
@@ -164,8 +197,8 @@ export const ReactionScreen: React.FC<ReactionScreenProps> = ({
               alignItems: 'center',
               justifyContent: 'center',
               position: 'absolute',
-              left: '-6px',
-              bottom: '-4px',
+              left: '-4px',
+              bottom: '-2px',
               transform: 'rotate(-6deg)',
               overflow: 'hidden',
             }}
@@ -187,8 +220,8 @@ export const ReactionScreen: React.FC<ReactionScreenProps> = ({
             <svg
               role="img"
               aria-label="Штамп: верно, допущен"
-              width="170"
-              height="170"
+              width="150"
+              height="150"
               viewBox="0 0 220 220"
               style={{
                 position: 'absolute',
@@ -213,8 +246,8 @@ export const ReactionScreen: React.FC<ReactionScreenProps> = ({
             <svg
               role="img"
               aria-label="Штамп: неверно, но любим"
-              width="170"
-              height="170"
+              width="150"
+              height="150"
               viewBox="0 0 220 220"
               style={{
                 position: 'absolute',
@@ -245,7 +278,7 @@ export const ReactionScreen: React.FC<ReactionScreenProps> = ({
             margin: 0,
             fontStyle: 'italic',
             fontWeight: 900,
-            fontSize: title.length > 10 ? '48px' : '64px',
+            fontSize: title.length > 10 ? 'clamp(32px, 8.5vw, 44px)' : 'clamp(40px, 11vw, 54px)',
             lineHeight: 1,
             color: isCorrect ? '#1A1020' : '#E0167A',
           }}
@@ -330,8 +363,19 @@ export const ReactionScreen: React.FC<ReactionScreenProps> = ({
         </div>
       </div>
 
-      {/* Button Next / Retry */}
-      <div style={{ zIndex: 2 }}>
+      {/* Button Next / Retry - Sticky at bottom */}
+      <div
+        style={{
+          position: 'sticky',
+          bottom: 0,
+          zIndex: 20,
+          paddingTop: '8px',
+          paddingBottom: 'calc(8px + env(safe-area-inset-bottom, 0px))',
+          background: 'linear-gradient(to top, #FFD6EA 82%, rgba(255, 214, 234, 0))',
+          flexShrink: 0,
+          marginTop: 'auto',
+        }}
+      >
         <button
           onClick={onNext}
           type="button"
@@ -341,29 +385,30 @@ export const ReactionScreen: React.FC<ReactionScreenProps> = ({
             alignItems: 'center',
             justifyContent: 'center',
             gap: '10px',
-            height: '60px',
+            height: '58px',
             borderRadius: '999px',
             border: 0,
-            background: '#1A1020',
-            color: '#FFD6EA',
+            background: isCorrect ? '#E0167A' : '#1A1020',
+            color: '#FFFFFF',
             fontWeight: 800,
             fontSize: '17px',
             letterSpacing: '0.04em',
-            boxShadow: '0 8px 24px rgba(26, 16, 32, 0.25)',
+            boxShadow: isCorrect ? '0 8px 24px rgba(224, 22, 122, 0.35)' : '0 8px 24px rgba(26, 16, 32, 0.25)',
             cursor: 'pointer',
+            transition: 'all 0.2s ease',
           }}
         >
           {isCorrect ? (
             <>
-              Дальше
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFD6EA" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
+              <span>Дальше</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M5 12h14M13 6l6 6-6 6" />
               </svg>
             </>
           ) : (
             <>
-              Попробовать снова
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFD6EA" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
+              <span>Попробовать снова</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
                 <path d="M3 3v5h5" />
               </svg>

@@ -106,6 +106,26 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
     onAnswer(isCorrect, isCorrect ? 'Засчитано жюри' : 'Мимо');
   };
 
+  const isSubmitDisabled =
+    question.type === 'text' || question.type === 'hidden_photo_text'
+      ? !textInput.trim()
+      : question.type === 'choice'
+      ? selectedChoice === null
+      : question.type === 'match'
+      ? Object.keys(question.pairs || {}).some((p) => matchPairs[p] === undefined)
+      : false;
+
+  const handleFinalSubmit = () => {
+    if (isSubmitDisabled) return;
+    if (question.type === 'text' || question.type === 'hidden_photo_text') {
+      handleTextSubmit();
+    } else if (question.type === 'choice') {
+      handleChoiceSubmit();
+    } else if (question.type === 'match') {
+      handleMatchSubmit();
+    }
+  };
+
   return (
     <div
       ref={containerRef}
@@ -161,12 +181,42 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
                 ↺ Сначала
               </button>
             )}
-            <div style={{ fontSize: '13px', fontWeight: 800, letterSpacing: '0.16em', textTransform: 'uppercase' }}>
+            <div style={{ fontSize: '13px', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
               Вопрос {currentIndex + 1}
             </div>
           </div>
-          <div style={{ fontSize: '15px', fontWeight: 900 }}>
-            {currentIndex + 1} / {totalQuestions}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div style={{ fontSize: '13px', fontWeight: 800, color: '#5C3A4E' }}>
+              {currentIndex + 1} / {totalQuestions}
+            </div>
+            {question.type !== 'voice' && (
+              <button
+                type="button"
+                onClick={handleFinalSubmit}
+                disabled={isSubmitDisabled}
+                title="Ответить"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  padding: '5px 12px',
+                  borderRadius: '999px',
+                  border: isSubmitDisabled ? '1px solid rgba(26, 16, 32, 0.12)' : 0,
+                  background: isSubmitDisabled ? 'rgba(26, 16, 32, 0.06)' : '#E0167A',
+                  color: isSubmitDisabled ? '#8A5270' : '#FFFFFF',
+                  fontSize: '12px',
+                  fontWeight: 800,
+                  cursor: isSubmitDisabled ? 'not-allowed' : 'pointer',
+                  boxShadow: isSubmitDisabled ? 'none' : '0 3px 10px rgba(224, 22, 122, 0.35)',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                <span>Дальше</span>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M5 12h14M13 6l6 6-6 6" />
+                </svg>
+              </button>
+            )}
           </div>
         </div>
         <div
@@ -342,40 +392,71 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
           >
             Твой ответ
           </label>
-          <input
-            id="answer-input"
-            type="text"
-            value={textInput}
-            onChange={(e) => setTextInput(e.target.value)}
-            onFocus={() => {
-              setIsInputFocused(true);
-              if (containerRef.current) {
-                containerRef.current.scrollTop = 0;
-              }
-              window.scrollTo(0, 0);
-            }}
-            onBlur={() => {
-              setIsInputFocused(false);
-            }}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') handleTextSubmit();
-            }}
-            placeholder={question.placeholder || 'Напиши ответ'}
-            autoComplete="off"
-            style={{
-              height: isInputFocused ? '50px' : '60px',
-              boxSizing: 'border-box',
-              padding: '0 20px',
-              borderRadius: '18px',
-              border: '2px solid #1A1020',
-              background: '#FFFFFF',
-              color: '#1A1020',
-              fontSize: '18px',
-              fontWeight: 700,
-              outlineColor: '#E0167A',
-              transition: 'height 0.2s ease',
-            }}
-          />
+          <div style={{ position: 'relative', width: '100%' }}>
+            <input
+              id="answer-input"
+              type="text"
+              value={textInput}
+              onChange={(e) => setTextInput(e.target.value)}
+              onFocus={() => {
+                setIsInputFocused(true);
+                if (containerRef.current) {
+                  containerRef.current.scrollTop = 0;
+                }
+                window.scrollTo(0, 0);
+              }}
+              onBlur={() => {
+                setIsInputFocused(false);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') handleTextSubmit();
+              }}
+              placeholder={question.placeholder || 'Напиши ответ'}
+              autoComplete="off"
+              style={{
+                width: '100%',
+                height: isInputFocused ? '50px' : '60px',
+                boxSizing: 'border-box',
+                padding: '0 56px 0 20px',
+                borderRadius: '18px',
+                border: '2px solid #1A1020',
+                background: '#FFFFFF',
+                color: '#1A1020',
+                fontSize: '18px',
+                fontWeight: 700,
+                outlineColor: '#E0167A',
+                transition: 'height 0.2s ease',
+              }}
+            />
+            <button
+              type="button"
+              onClick={handleTextSubmit}
+              disabled={!textInput.trim()}
+              title="Ответить"
+              style={{
+                position: 'absolute',
+                right: '7px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                width: isInputFocused ? '38px' : '46px',
+                height: isInputFocused ? '38px' : '46px',
+                borderRadius: '50%',
+                border: 0,
+                background: textInput.trim() ? '#E0167A' : '#F5BCCD',
+                color: '#FFFFFF',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: textInput.trim() ? 'pointer' : 'not-allowed',
+                boxShadow: textInput.trim() ? '0 4px 12px rgba(224, 22, 122, 0.4)' : 'none',
+                transition: 'all 0.2s ease',
+              }}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            </button>
+          </div>
 
           {/* Hint if present */}
           {question.hint && (
@@ -632,78 +713,51 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
 
       <div style={{ flexGrow: 1 }} />
 
-      {/* Bottom Submit Button (for non-voice questions) */}
+      {/* Bottom Submit Button (for non-voice questions) - Sticky at bottom */}
       {question.type !== 'voice' && (
-        <div style={{ zIndex: 10, paddingTop: '14px', flexShrink: 0 }}>
+        <div
+          style={{
+            position: 'sticky',
+            bottom: 0,
+            zIndex: 20,
+            paddingTop: '10px',
+            paddingBottom: 'calc(8px + env(safe-area-inset-bottom, 0px))',
+            background: 'linear-gradient(to top, #FFD6EA 82%, rgba(255, 214, 234, 0))',
+            flexShrink: 0,
+            marginTop: 'auto',
+          }}
+        >
           <button
             type="button"
-            disabled={
-              question.type === 'text' || question.type === 'hidden_photo_text'
-                ? !textInput.trim()
-                : question.type === 'choice'
-                ? selectedChoice === null
-                : question.type === 'match'
-                ? Object.keys(question.pairs || {}).some((p) => matchPairs[p] === undefined)
-                : false
-            }
-            onClick={() => {
-              if (question.type === 'text' || question.type === 'hidden_photo_text') {
-                handleTextSubmit();
-              } else if (question.type === 'choice') {
-                handleChoiceSubmit();
-              } else if (question.type === 'match') {
-                handleMatchSubmit();
-              }
+            disabled={isSubmitDisabled}
+            onClick={handleFinalSubmit}
+            style={{
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              height: '58px',
+              borderRadius: '999px',
+              border: isSubmitDisabled ? '2px solid #F3BCD6' : 0,
+              background: isSubmitDisabled ? '#F5BCCD' : '#E0167A',
+              color: isSubmitDisabled ? '#8A5270' : '#FFFFFF',
+              fontWeight: 800,
+              fontSize: '17px',
+              boxShadow: isSubmitDisabled ? 'none' : '0 8px 24px rgba(224, 22, 122, 0.35)',
+              cursor: isSubmitDisabled ? 'not-allowed' : 'pointer',
+              transition: 'all 0.2s ease',
             }}
-              style={{
-                width: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                height: '58px',
-                borderRadius: '999px',
-                border: (
-                  (question.type === 'text' || question.type === 'hidden_photo_text') && !textInput.trim()
-                ) || (
-                  question.type === 'choice' && selectedChoice === null
-                ) || (
-                  question.type === 'match' && Object.keys(question.pairs || {}).some((p) => matchPairs[p] === undefined)
-                ) ? '2px solid #F3BCD6' : 0,
-                background: (
-                  (question.type === 'text' || question.type === 'hidden_photo_text') && !textInput.trim()
-                ) || (
-                  question.type === 'choice' && selectedChoice === null
-                ) || (
-                  question.type === 'match' && Object.keys(question.pairs || {}).some((p) => matchPairs[p] === undefined)
-                ) ? '#F5BCCD' : '#E0167A',
-                color: (
-                  (question.type === 'text' || question.type === 'hidden_photo_text') && !textInput.trim()
-                ) || (
-                  question.type === 'choice' && selectedChoice === null
-                ) || (
-                  question.type === 'match' && Object.keys(question.pairs || {}).some((p) => matchPairs[p] === undefined)
-                ) ? '#8A5270' : '#FFFFFF',
-                fontWeight: 800,
-                fontSize: '17px',
-                boxShadow: (
-                  (question.type === 'text' || question.type === 'hidden_photo_text') && !textInput.trim()
-                ) || (
-                  question.type === 'choice' && selectedChoice === null
-                ) || (
-                  question.type === 'match' && Object.keys(question.pairs || {}).some((p) => matchPairs[p] === undefined)
-                ) ? 'none' : '0 8px 24px rgba(224, 22, 122, 0.35)',
-                cursor: (
-                  (question.type === 'text' || question.type === 'hidden_photo_text') && !textInput.trim()
-                ) || (
-                  question.type === 'choice' && selectedChoice === null
-                ) || (
-                  question.type === 'match' && Object.keys(question.pairs || {}).some((p) => matchPairs[p] === undefined)
-                ) ? 'not-allowed' : 'pointer',
-                transition: 'all 0.2s ease',
-              }}
-            >
-              Мой ответ финальный
-            </button>
+          >
+            <span>
+              {isSubmitDisabled
+                ? (question.type === 'text' || question.type === 'hidden_photo_text' ? 'Введи ответ' : 'Выбери ответ')
+                : 'Мой ответ финальный'}
+            </span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M5 12h14M13 6l6 6-6 6" />
+            </svg>
+          </button>
         </div>
       )}
     </div>

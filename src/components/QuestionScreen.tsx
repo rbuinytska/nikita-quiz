@@ -39,6 +39,27 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
     setIsInputFocused(false);
   }, [question.id, initialPhotoRevealed]);
 
+  useEffect(() => {
+    if (!isInputFocused) return;
+    const scrollReset = () => {
+      window.scrollTo(0, 0);
+      if (containerRef.current) {
+        containerRef.current.scrollTop = 0;
+      }
+    };
+    scrollReset();
+    const t1 = setTimeout(scrollReset, 50);
+    const t2 = setTimeout(scrollReset, 150);
+    const t3 = setTimeout(scrollReset, 300);
+    window.addEventListener('scroll', scrollReset, { passive: true });
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+      window.removeEventListener('scroll', scrollReset);
+    };
+  }, [isInputFocused]);
+
   const progressPercent = Math.round(((currentIndex + 1) / totalQuestions) * 100);
 
   // Handler for text submission
@@ -120,16 +141,19 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
       style={{
         flex: 1,
         width: '100%',
-        minHeight: '100dvh',
+        minHeight: isInputFocused ? 'auto' : '100dvh',
+        height: isInputFocused ? '100%' : 'auto',
         boxSizing: 'border-box',
         background: '#FFD6EA',
         color: '#1A1020',
-        padding: 'max(14px, env(safe-area-inset-top, 14px)) 20px calc(20px + env(safe-area-inset-bottom, 16px))',
+        padding: isInputFocused
+          ? 'max(6px, env(safe-area-inset-top, 6px)) 16px 8px'
+          : 'max(14px, env(safe-area-inset-top, 14px)) 20px calc(20px + env(safe-area-inset-bottom, 16px))',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'flex-start',
-        gap: '12px',
-        overflowY: 'auto',
+        gap: isInputFocused ? '6px' : '12px',
+        overflowY: isInputFocused ? 'hidden' : 'auto',
         overflowX: 'hidden',
         position: 'relative',
         zIndex: 1,
@@ -201,10 +225,11 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
         <div
           style={{
             position: 'relative',
-            alignSelf: question.media.orientation === 'portrait' ? 'center' : 'stretch',
-            width: question.media.orientation === 'portrait' ? (isInputFocused ? '130px' : '180px') : 'auto',
+            alignSelf: 'center',
+            width: isInputFocused ? 'auto' : (question.media.orientation === 'portrait' ? '180px' : 'auto'),
+            maxWidth: isInputFocused ? '260px' : 'none',
             height: isInputFocused
-              ? (question.media.orientation === 'portrait' ? '135px' : '115px')
+              ? '140px'
               : (question.type === 'match'
                 ? '140px'
                 : question.type === 'text' || question.type === 'hidden_photo_text'
@@ -214,12 +239,12 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
                 : '220px'),
             flexShrink: 0,
             boxSizing: 'border-box',
-            borderRadius: '22px',
+            borderRadius: isInputFocused ? '16px' : '22px',
             background: '#1A1020',
-            padding: '7px',
-            boxShadow: '0 14px 30px rgba(26, 16, 32, 0.18)',
-            transform: 'rotate(-1.5deg)',
-            transition: 'height 0.28s ease, width 0.28s ease',
+            padding: '5px',
+            boxShadow: '0 10px 24px rgba(26, 16, 32, 0.18)',
+            transform: isInputFocused ? 'rotate(0deg)' : 'rotate(-1.5deg)',
+            transition: 'all 0.25s ease',
             zIndex: 2,
           }}
         >
@@ -256,7 +281,7 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
                 style={{
                   width: '100%',
                   height: '100%',
-                  objectFit: 'cover',
+                  objectFit: isInputFocused ? 'contain' : 'cover',
                   display: 'block',
                   filter: photoRevealed ? 'none' : 'blur(22px) saturate(1.3)',
                   transform: photoRevealed ? 'scale(1)' : 'scale(1.2)',
@@ -292,34 +317,36 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
               style={{
                 width: '100%',
                 height: '100%',
-                objectFit: 'cover',
-                borderRadius: '16px',
+                objectFit: isInputFocused ? 'contain' : 'cover',
+                borderRadius: isInputFocused ? '12px' : '16px',
                 display: 'block',
               }}
             />
           )}
 
           {/* Sticker badge */}
-          <div
-            className="font-playfair"
-            style={{
-              position: 'absolute',
-              right: '-8px',
-              top: '-12px',
-              padding: '8px 14px',
-              borderRadius: '12px',
-              background: '#E0167A',
-              color: '#FFFFFF',
-              fontStyle: 'italic',
-              fontWeight: 900,
-              fontSize: '18px',
-              transform: 'rotate(6deg)',
-              boxShadow: '0 4px 12px rgba(224, 22, 122, 0.35)',
-              zIndex: 3,
-            }}
-          >
-            {photoRevealed && question.revealText ? 'а вот и он' : question.badge || 'это база'}
-          </div>
+          {!isInputFocused && (
+            <div
+              className="font-playfair"
+              style={{
+                position: 'absolute',
+                right: '-8px',
+                top: '-12px',
+                padding: '8px 14px',
+                borderRadius: '12px',
+                background: '#E0167A',
+                color: '#FFFFFF',
+                fontStyle: 'italic',
+                fontWeight: 900,
+                fontSize: '18px',
+                transform: 'rotate(6deg)',
+                boxShadow: '0 4px 12px rgba(224, 22, 122, 0.35)',
+                zIndex: 3,
+              }}
+            >
+              {photoRevealed && question.revealText ? 'а вот и он' : question.badge || 'это база'}
+            </div>
+          )}
         </div>
       )}
 
@@ -327,10 +354,10 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
       <h2
         className="font-playfair"
         style={{
-          margin: '4px 4px 0',
+          margin: isInputFocused ? '2px 4px 0' : '4px 4px 0',
           fontStyle: 'italic',
           fontWeight: 900,
-          fontSize: question.question.length > 50 ? '24px' : '28px',
+          fontSize: isInputFocused ? '18px' : (question.question.length > 50 ? '24px' : '28px'),
           lineHeight: 1.15,
           zIndex: 2,
         }}
@@ -359,7 +386,11 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
               type="text"
               value={textInput}
               onChange={(e) => setTextInput(e.target.value)}
-              onFocus={() => setIsInputFocused(true)}
+              onFocus={() => {
+                setIsInputFocused(true);
+                window.scrollTo(0, 0);
+                if (containerRef.current) containerRef.current.scrollTop = 0;
+              }}
               onBlur={() => setIsInputFocused(false)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') handleTextSubmit();
@@ -368,7 +399,7 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
               autoComplete="off"
               style={{
                 width: '100%',
-                height: '56px',
+                height: isInputFocused ? '50px' : '56px',
                 boxSizing: 'border-box',
                 padding: '0 54px 0 18px',
                 borderRadius: '18px',
@@ -666,7 +697,7 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
       <div style={{ flexGrow: 1 }} />
 
       {/* Bottom Submit Button (for non-voice questions) - Sticky at bottom */}
-      {question.type !== 'voice' && (
+      {question.type !== 'voice' && !isInputFocused && (
         <div
           style={{
             position: 'sticky',

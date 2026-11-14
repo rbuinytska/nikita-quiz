@@ -96,7 +96,7 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
         boxSizing: 'border-box',
         background: '#FFD6EA',
         color: '#1A1020',
-        padding: '38px 20px 28px',
+        padding: '28px 20px calc(28px + env(safe-area-inset-bottom, 16px))',
         display: 'flex',
         flexDirection: 'column',
         gap: '14px',
@@ -573,7 +573,7 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
 
       {/* Bottom Submit Button (for non-voice questions) */}
       {question.type !== 'voice' && (
-        <div style={{ zIndex: 2, paddingTop: '10px' }}>
+        <div style={{ zIndex: 10, paddingTop: '14px', flexShrink: 0 }}>
           {question.type === 'hidden_photo_text' && photoRevealed ? (
             <button
               type="button"
@@ -586,13 +586,14 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                height: '56px',
+                height: '58px',
                 borderRadius: '999px',
                 border: 0,
                 background: '#E0167A',
                 color: '#FFFFFF',
                 fontWeight: 800,
                 fontSize: '17px',
+                boxShadow: '0 8px 24px rgba(224, 22, 122, 0.35)',
               }}
             >
               Дальше
@@ -623,24 +624,46 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                height: '56px',
+                height: '58px',
                 borderRadius: '999px',
-                border: 0,
-                background: '#E0167A',
-                color: '#FFFFFF',
+                border: (
+                  (question.type === 'text' || question.type === 'hidden_photo_text') && !textInput.trim()
+                ) || (
+                  question.type === 'choice' && selectedChoice === null
+                ) || (
+                  question.type === 'match' && Object.keys(question.pairs || {}).some((p) => matchPairs[p] === undefined)
+                ) ? '2px solid #F3BCD6' : 0,
+                background: (
+                  (question.type === 'text' || question.type === 'hidden_photo_text') && !textInput.trim()
+                ) || (
+                  question.type === 'choice' && selectedChoice === null
+                ) || (
+                  question.type === 'match' && Object.keys(question.pairs || {}).some((p) => matchPairs[p] === undefined)
+                ) ? '#F5BCCD' : '#E0167A',
+                color: (
+                  (question.type === 'text' || question.type === 'hidden_photo_text') && !textInput.trim()
+                ) || (
+                  question.type === 'choice' && selectedChoice === null
+                ) || (
+                  question.type === 'match' && Object.keys(question.pairs || {}).some((p) => matchPairs[p] === undefined)
+                ) ? '#8A5270' : '#FFFFFF',
                 fontWeight: 800,
                 fontSize: '17px',
-                opacity:
+                boxShadow: (
                   (question.type === 'text' || question.type === 'hidden_photo_text') && !textInput.trim()
-                    ? 0.45
-                    : question.type === 'choice' && selectedChoice === null
-                    ? 0.45
-                    : question.type === 'match' &&
-                      Object.keys(question.pairs || {}).some((p) => matchPairs[p] === undefined)
-                    ? 0.45
-                    : 1,
-                cursor: 'pointer',
-                transition: 'opacity 0.2s ease',
+                ) || (
+                  question.type === 'choice' && selectedChoice === null
+                ) || (
+                  question.type === 'match' && Object.keys(question.pairs || {}).some((p) => matchPairs[p] === undefined)
+                ) ? 'none' : '0 8px 24px rgba(224, 22, 122, 0.35)',
+                cursor: (
+                  (question.type === 'text' || question.type === 'hidden_photo_text') && !textInput.trim()
+                ) || (
+                  question.type === 'choice' && selectedChoice === null
+                ) || (
+                  question.type === 'match' && Object.keys(question.pairs || {}).some((p) => matchPairs[p] === undefined)
+                ) ? 'not-allowed' : 'pointer',
+                transition: 'all 0.2s ease',
               }}
             >
               Мой ответ финальный

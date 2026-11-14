@@ -21,7 +21,7 @@ export const StageBackground: React.FC<StageBackgroundProps> = ({
         position: 'absolute',
         left: 0,
         top: 0,
-        zIndex: 0,
+        zIndex: -1,
         pointerEvents: 'none',
       }}
     >

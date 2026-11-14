@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { QuestionItem } from '../types';
 import { StageBackground } from './StageBackground';
 import { checkTextAnswer } from '../utils/checker';
+import { assetUrl } from '../utils/assets';
 
 interface QuestionScreenProps {
   question: QuestionItem;
@@ -157,8 +158,8 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
         >
           {question.media.video ? (
             <video
-              src={question.media.video}
-              poster={question.media.poster}
+              src={assetUrl(question.media.video)}
+              poster={assetUrl(question.media.poster)}
               controls
               playsInline
               preload="metadata"
@@ -183,7 +184,7 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
               }}
             >
               <img
-                src={question.media.photo}
+                src={assetUrl(question.media.photo)}
                 alt=""
                 style={{
                   width: '100%',
@@ -219,7 +220,7 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
             </div>
           ) : (
             <img
-              src={question.media.photo}
+              src={assetUrl(question.media.photo)}
               alt=""
               style={{
                 width: '100%',

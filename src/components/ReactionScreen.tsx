@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { QuestionItem } from '../types';
 import { StageBackground } from './StageBackground';
+import { assetUrl } from '../utils/assets';
 
 interface ReactionScreenProps {
   question: QuestionItem;
@@ -150,7 +151,7 @@ export const ReactionScreen: React.FC<ReactionScreenProps> = ({
             }}
           >
             <img
-              src="/assets/nikita.jpg"
+              src={assetUrl('assets/nikita.jpg')}
               alt="Никита"
               style={{
                 width: '100%',
@@ -273,7 +274,7 @@ export const ReactionScreen: React.FC<ReactionScreenProps> = ({
             }}
           >
             <img
-              src="/assets/q10-sticker.png"
+              src={assetUrl('assets/q10-sticker.png')}
               alt="Стикер"
               style={{ width: '80px', height: '80px', objectFit: 'contain', display: 'block' }}
             />

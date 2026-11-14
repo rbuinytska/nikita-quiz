@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import confetti from 'canvas-confetti';
 import { appConfig } from '../config';
+import { assetUrl } from '../utils/assets';
 
 interface ParachuteDropScreenProps {
   onViewTicket: () => void;
@@ -124,7 +125,7 @@ export const ParachuteDropScreen: React.FC<ParachuteDropScreenProps> = ({ onView
             }}
           >
             <img
-              src="/assets/nikita.jpg"
+              src={assetUrl('assets/nikita.jpg')}
               alt="Никита"
               style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
             />

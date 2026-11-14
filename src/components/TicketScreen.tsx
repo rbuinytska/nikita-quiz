@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import { toPng } from 'html-to-image';
 import { StageBackground } from './StageBackground';
 import { appConfig } from '../config';
+import { assetUrl } from '../utils/assets';
 
 interface TicketScreenProps {
   onRestart: () => void;
@@ -146,7 +147,7 @@ export const TicketScreen: React.FC<TicketScreenProps> = ({ onRestart }) => {
               overflow: 'hidden',
             }}
           >
-            <img src="/assets/nikita.jpg" alt="Никита" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+            <img src={assetUrl('assets/nikita.jpg')} alt="Никита" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>

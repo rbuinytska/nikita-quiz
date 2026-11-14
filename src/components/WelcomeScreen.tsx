@@ -1,6 +1,7 @@
 import React from 'react';
 import { StageBackground } from './StageBackground';
 import { appConfig } from '../config';
+import { assetUrl } from '../utils/assets';
 
 interface WelcomeScreenProps {
   onStart: () => void;
@@ -110,7 +111,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
             }}
           >
             <img
-              src="/assets/nikita.jpg"
+              src={assetUrl('assets/nikita.jpg')}
               alt="Никита"
               style={{
                 width: '100%',

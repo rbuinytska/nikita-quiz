@@ -345,6 +345,10 @@ export const ReactionScreen: React.FC<ReactionScreenProps> = ({
       >
         <button
           onClick={onNext}
+          onPointerDown={(e) => {
+            e.preventDefault();
+            onNext();
+          }}
           type="button"
           style={{
             width: '100%',

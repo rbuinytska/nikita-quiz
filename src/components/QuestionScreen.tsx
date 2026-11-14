@@ -380,7 +380,13 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
           >
             Твой ответ
           </label>
-          <div style={{ position: 'relative', width: '100%' }}>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleTextSubmit();
+            }}
+            style={{ position: 'relative', width: '100%', margin: 0 }}
+          >
             <input
               id="answer-input"
               type="text"
@@ -393,7 +399,10 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
               }}
               onBlur={() => setIsInputFocused(false)}
               onKeyDown={(e) => {
-                if (e.key === 'Enter') handleTextSubmit();
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  handleTextSubmit();
+                }
               }}
               placeholder={question.placeholder || 'Напиши ответ'}
               autoComplete="off"
@@ -412,8 +421,16 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
               }}
             />
             <button
-              type="button"
-              onClick={handleTextSubmit}
+              type="submit"
+              onPointerDown={(e) => {
+                if (!textInput.trim()) return;
+                e.preventDefault();
+                handleTextSubmit();
+              }}
+              onClick={(e) => {
+                e.preventDefault();
+                handleTextSubmit();
+              }}
               disabled={!textInput.trim()}
               title="Ответить"
               style={{
@@ -439,7 +456,7 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
                 <path d="M5 12h14M13 6l6 6-6 6" />
               </svg>
             </button>
-          </div>
+          </form>
 
           {/* Hint if present */}
           {question.hint && (
@@ -713,6 +730,11 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
           <button
             type="button"
             disabled={isSubmitDisabled}
+            onPointerDown={(e) => {
+              if (isSubmitDisabled) return;
+              e.preventDefault();
+              handleFinalSubmit();
+            }}
             onClick={handleFinalSubmit}
             style={{
               width: '100%',

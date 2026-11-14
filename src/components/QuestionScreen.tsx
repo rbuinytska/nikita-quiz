@@ -51,13 +51,22 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
     }
   }, [question.id]);
 
-  // Preload next 2 question media items in background for instant loading
+  // Preload next 2 question media items (images, posters, and videos) in background for instant loading
   useEffect(() => {
     for (let i = 1; i <= 2; i++) {
       const nextQ = questionsData[currentIndex + i];
       if (nextQ?.media?.photo) {
         const img = new Image();
         img.src = assetUrl(nextQ.media.photo);
+      }
+      if (nextQ?.media?.poster) {
+        const poster = new Image();
+        poster.src = assetUrl(nextQ.media.poster);
+      }
+      if (nextQ?.media?.video) {
+        const video = document.createElement('video');
+        video.preload = 'auto';
+        video.src = assetUrl(nextQ.media.video);
       }
     }
   }, [currentIndex]);

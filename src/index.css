@@ -89,6 +89,39 @@ html, body {
   animation: drift 6s ease-in-out infinite;
 }
 
+/* Shimmer loader for loading media */
+@keyframes shimmerWave {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.shimmer-box {
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  background: linear-gradient(
+    90deg,
+    #25152A 0%,
+    #421A38 30%,
+    #E0167A44 50%,
+    #421A38 70%,
+    #25152A 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmerWave 1.5s ease-in-out infinite;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justifyContent: center;
+  gap: 8px;
+  color: #FFD6EA;
+  z-index: 1;
+}
+
 @keyframes fall {
   0% { transform: translateY(-120px) rotate(0deg); }
   100% { transform: translateY(960px) rotate(540deg); }

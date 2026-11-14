@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { QuestionItem } from '../types';
+import { questionsData } from '../data/questions';
 import { StageBackground } from './StageBackground';
 import { checkTextAnswer } from '../utils/checker';
 import { assetUrl } from '../utils/assets';
@@ -22,6 +23,7 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
   onRestart,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const imgRef = useRef<HTMLImageElement>(null);
 
   // Local state for various question types
   const [textInput, setTextInput] = useState('');
@@ -29,6 +31,8 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
   const [matchPairs, setMatchPairs] = useState<Record<string, number>>({});
   const [photoRevealed, setPhotoRevealed] = useState(initialPhotoRevealed);
   const [isInputFocused, setIsInputFocused] = useState(false);
+  const [isMediaLoaded, setIsMediaLoaded] = useState(false);
+  const [viewportHeight, setViewportHeight] = useState<number | null>(null);
 
   // Reset local state when question changes
   useEffect(() => {
@@ -37,20 +41,64 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
     setMatchPairs({});
     setPhotoRevealed(initialPhotoRevealed);
     setIsInputFocused(false);
+    setIsMediaLoaded(false);
   }, [question.id, initialPhotoRevealed]);
 
+  // Check if image is already cached and loaded
+  useEffect(() => {
+    if (imgRef.current && imgRef.current.complete && imgRef.current.naturalWidth > 0) {
+      setIsMediaLoaded(true);
+    }
+  }, [question.id]);
+
+  // Preload next 2 question media items in background for instant loading
+  useEffect(() => {
+    for (let i = 1; i <= 2; i++) {
+      const nextQ = questionsData[currentIndex + i];
+      if (nextQ?.media?.photo) {
+        const img = new Image();
+        img.src = assetUrl(nextQ.media.photo);
+      }
+    }
+  }, [currentIndex]);
+
+  // Listen to visualViewport for mobile virtual keyboard changes
+  useEffect(() => {
+    const vv = window.visualViewport;
+    if (!vv) return;
+
+    const handleViewportChange = () => {
+      // When keyboard opens, vv.height is noticeably smaller than screen height
+      if (window.innerHeight - vv.height > 80) {
+        setViewportHeight(vv.height);
+      } else {
+        setViewportHeight(null);
+      }
+    };
+
+    vv.addEventListener('resize', handleViewportChange);
+    vv.addEventListener('scroll', handleViewportChange);
+    return () => {
+      vv.removeEventListener('resize', handleViewportChange);
+      vv.removeEventListener('scroll', handleViewportChange);
+    };
+  }, []);
+
+  // When keyboard opens, keep scroll locked at top so content never jumps or cuts off
   useEffect(() => {
     if (!isInputFocused) return;
     const scrollReset = () => {
       window.scrollTo(0, 0);
-      if (containerRef.current) {
-        containerRef.current.scrollTop = 0;
-      }
+      document.body.scrollTop = 0;
+      if (document.documentElement) document.documentElement.scrollTop = 0;
+      if (containerRef.current) containerRef.current.scrollTop = 0;
+      const parent = containerRef.current?.parentElement;
+      if (parent) parent.scrollTop = 0;
     };
     scrollReset();
-    const t1 = setTimeout(scrollReset, 50);
-    const t2 = setTimeout(scrollReset, 150);
-    const t3 = setTimeout(scrollReset, 300);
+    const t1 = setTimeout(scrollReset, 30);
+    const t2 = setTimeout(scrollReset, 100);
+    const t3 = setTimeout(scrollReset, 250);
     window.addEventListener('scroll', scrollReset, { passive: true });
     return () => {
       clearTimeout(t1);
@@ -139,10 +187,18 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
     <div
       ref={containerRef}
       style={{
-        flex: 1,
+        position: isInputFocused ? 'fixed' : 'relative',
+        top: 0,
+        left: 0,
+        right: 0,
+        margin: '0 auto',
+        maxWidth: '430px',
         width: '100%',
         minHeight: isInputFocused ? 'auto' : '100dvh',
-        height: isInputFocused ? '100%' : 'auto',
+        height: isInputFocused
+          ? (viewportHeight ? `${viewportHeight}px` : '100dvh')
+          : 'auto',
+        maxHeight: isInputFocused && viewportHeight ? `${viewportHeight}px` : 'none',
         boxSizing: 'border-box',
         background: '#FFD6EA',
         color: '#1A1020',
@@ -152,20 +208,19 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'flex-start',
-        gap: isInputFocused ? '6px' : '12px',
+        gap: isInputFocused ? '4px' : '12px',
         overflowY: isInputFocused ? 'hidden' : 'auto',
         overflowX: 'hidden',
-        position: 'relative',
-        zIndex: 1,
+        zIndex: isInputFocused ? 50 : 1,
       }}
     >
       <StageBackground />
 
       {/* Progress header */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', padding: '0 4px', zIndex: 10 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: isInputFocused ? '4px' : '8px', padding: '0 4px', zIndex: 10 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            {onRestart && (
+            {onRestart && !isInputFocused && (
               <button
                 type="button"
                 onClick={() => {
@@ -191,18 +246,18 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
                 ↺ Сначала
               </button>
             )}
-            <div style={{ fontSize: '13px', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+            <div style={{ fontSize: isInputFocused ? '11px' : '13px', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
               Вопрос {currentIndex + 1}
             </div>
           </div>
-          <div style={{ fontSize: '15px', fontWeight: 900 }}>
+          <div style={{ fontSize: isInputFocused ? '12px' : '15px', fontWeight: 900 }}>
             {currentIndex + 1} / {totalQuestions}
           </div>
         </div>
         <div
           aria-hidden="true"
           style={{
-            height: '8px',
+            height: isInputFocused ? '5px' : '8px',
             borderRadius: '4px',
             background: '#FFFFFF',
             overflow: 'hidden',
@@ -211,7 +266,7 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
           <div
             style={{
               width: `${progressPercent}%`,
-              height: '8px',
+              height: isInputFocused ? '5px' : '8px',
               borderRadius: '4px',
               background: '#E0167A',
               transition: 'width 0.4s ease',
@@ -229,7 +284,7 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
             width: isInputFocused ? 'auto' : (question.media.orientation === 'portrait' ? '180px' : 'auto'),
             maxWidth: isInputFocused ? '260px' : 'none',
             height: isInputFocused
-              ? '140px'
+              ? 'min(130px, 28vh)'
               : (question.type === 'match'
                 ? '140px'
                 : question.type === 'text' || question.type === 'hidden_photo_text'
@@ -237,17 +292,27 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
                 : question.media.orientation === 'portrait'
                 ? '270px'
                 : '220px'),
-            flexShrink: 0,
+            flexShrink: isInputFocused ? 1 : 0,
             boxSizing: 'border-box',
-            borderRadius: isInputFocused ? '16px' : '22px',
+            borderRadius: isInputFocused ? '14px' : '22px',
             background: '#1A1020',
-            padding: '5px',
+            padding: isInputFocused ? '4px' : '5px',
             boxShadow: '0 10px 24px rgba(26, 16, 32, 0.18)',
             transform: isInputFocused ? 'rotate(0deg)' : 'rotate(-1.5deg)',
             transition: 'all 0.25s ease',
             zIndex: 2,
           }}
         >
+          {/* Shimmer skeleton while loading */}
+          {!isMediaLoaded && (
+            <div className="shimmer-box">
+              <span style={{ fontSize: '24px' }} className="pulse">📸</span>
+              <span style={{ fontSize: '10px', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', opacity: 0.85 }}>
+                Загрузка...
+              </span>
+            </div>
+          )}
+
           {question.media.video ? (
             <video
               src={assetUrl(question.media.video)}
@@ -255,13 +320,16 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
               controls
               playsInline
               preload="metadata"
+              onLoadedData={() => setIsMediaLoaded(true)}
               style={{
                 display: 'block',
                 width: '100%',
                 height: '100%',
                 objectFit: 'cover',
-                borderRadius: '16px',
+                borderRadius: isInputFocused ? '10px' : '16px',
                 background: '#1A1020',
+                opacity: isMediaLoaded ? 1 : 0,
+                transition: 'opacity 0.25s ease',
               }}
             />
           ) : question.type === 'hidden_photo_text' ? (
@@ -269,15 +337,17 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
               style={{
                 width: '100%',
                 height: '100%',
-                borderRadius: '16px',
+                borderRadius: isInputFocused ? '10px' : '16px',
                 overflow: 'hidden',
                 position: 'relative',
                 background: '#1A1020',
               }}
             >
               <img
+                ref={imgRef}
                 src={assetUrl(question.media.photo)}
                 alt=""
+                onLoad={() => setIsMediaLoaded(true)}
                 style={{
                   width: '100%',
                   height: '100%',
@@ -285,7 +355,8 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
                   display: 'block',
                   filter: photoRevealed ? 'none' : 'blur(22px) saturate(1.3)',
                   transform: photoRevealed ? 'scale(1)' : 'scale(1.2)',
-                  transition: 'filter 0.8s ease, transform 0.8s ease',
+                  opacity: isMediaLoaded ? 1 : 0,
+                  transition: 'opacity 0.25s ease, filter 0.8s ease, transform 0.8s ease',
                 }}
               />
               {!photoRevealed && (
@@ -297,29 +368,37 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
                     flexDirection: 'column',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    gap: '10px',
+                    gap: isInputFocused ? '4px' : '10px',
                     color: '#FFFFFF',
                     background: 'rgba(26, 16, 32, 0.35)',
+                    padding: '4px',
+                    textAlign: 'center',
                   }}
                 >
-                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width={isInputFocused ? '24' : '40'} height={isInputFocused ? '24' : '40'} viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <rect x="5" y="11" width="14" height="10" rx="2" />
                     <path d="M8 11V8a4 4 0 0 1 8 0v3" />
                   </svg>
-                  <div style={{ fontWeight: 800, fontSize: '15px' }}>Фото откроется после ответа</div>
+                  <div style={{ fontWeight: 800, fontSize: isInputFocused ? '12px' : '15px' }}>
+                    {isInputFocused ? 'Откроется после ответа' : 'Фото откроется после ответа'}
+                  </div>
                 </div>
               )}
             </div>
           ) : (
             <img
+              ref={imgRef}
               src={assetUrl(question.media.photo)}
               alt=""
+              onLoad={() => setIsMediaLoaded(true)}
               style={{
                 width: '100%',
                 height: '100%',
                 objectFit: isInputFocused ? 'contain' : 'cover',
-                borderRadius: isInputFocused ? '12px' : '16px',
+                borderRadius: isInputFocused ? '10px' : '16px',
                 display: 'block',
+                opacity: isMediaLoaded ? 1 : 0,
+                transition: 'opacity 0.25s ease',
               }}
             />
           )}
@@ -357,8 +436,9 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
           margin: isInputFocused ? '2px 4px 0' : '4px 4px 0',
           fontStyle: 'italic',
           fontWeight: 900,
-          fontSize: isInputFocused ? '18px' : (question.question.length > 50 ? '24px' : '28px'),
+          fontSize: isInputFocused ? '15px' : (question.question.length > 50 ? '24px' : '28px'),
           lineHeight: 1.15,
+          textAlign: isInputFocused ? 'center' : 'left',
           zIndex: 2,
         }}
       >
@@ -367,19 +447,21 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
 
       {/* QUESTION TYPE: TEXT or HIDDEN_PHOTO_TEXT */}
       {(question.type === 'text' || question.type === 'hidden_photo_text') && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', padding: '0 2px', zIndex: 2 }}>
-          <label
-            htmlFor="answer-input"
-            style={{
-              fontSize: '13px',
-              fontWeight: 800,
-              letterSpacing: '0.06em',
-              textTransform: 'uppercase',
-              color: '#5C3A4E',
-            }}
-          >
-            Твой ответ
-          </label>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: isInputFocused ? '4px' : '8px', padding: '0 2px', zIndex: 2 }}>
+          {!isInputFocused && (
+            <label
+              htmlFor="answer-input"
+              style={{
+                fontSize: '13px',
+                fontWeight: 800,
+                letterSpacing: '0.06em',
+                textTransform: 'uppercase',
+                color: '#5C3A4E',
+              }}
+            >
+              Твой ответ
+            </label>
+          )}
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -395,7 +477,11 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
               onFocus={() => {
                 setIsInputFocused(true);
                 window.scrollTo(0, 0);
+                document.body.scrollTop = 0;
+                if (document.documentElement) document.documentElement.scrollTop = 0;
                 if (containerRef.current) containerRef.current.scrollTop = 0;
+                const parent = containerRef.current?.parentElement;
+                if (parent) parent.scrollTop = 0;
               }}
               onBlur={() => setIsInputFocused(false)}
               onKeyDown={(e) => {
@@ -408,14 +494,14 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
               autoComplete="off"
               style={{
                 width: '100%',
-                height: isInputFocused ? '50px' : '56px',
+                height: isInputFocused ? '46px' : '56px',
                 boxSizing: 'border-box',
-                padding: '0 54px 0 18px',
-                borderRadius: '18px',
+                padding: '0 54px 0 16px',
+                borderRadius: '16px',
                 border: '2px solid #1A1020',
                 background: '#FFFFFF',
                 color: '#1A1020',
-                fontSize: '18px',
+                fontSize: '16px',
                 fontWeight: 700,
                 outlineColor: '#E0167A',
               }}
@@ -435,11 +521,11 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
               title="Ответить"
               style={{
                 position: 'absolute',
-                right: '7px',
+                right: '5px',
                 top: '50%',
                 transform: 'translateY(-50%)',
-                width: '42px',
-                height: '42px',
+                width: '38px',
+                height: '38px',
                 borderRadius: '50%',
                 border: 0,
                 background: textInput.trim() ? '#E0167A' : '#F5BCCD',
@@ -452,7 +538,7 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
                 transition: 'background 0.2s ease',
               }}
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M5 12h14M13 6l6 6-6 6" />
               </svg>
             </button>
@@ -462,16 +548,16 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
           {question.hint && (
             <div
               style={{
-                padding: '10px 14px',
-                borderRadius: '14px',
-                border: '2px dashed #E0167A',
+                padding: isInputFocused ? '4px 10px' : '10px 14px',
+                borderRadius: '12px',
+                border: '1.5px dashed #E0167A',
                 background: '#FFE9F3',
-                fontSize: '13px',
+                fontSize: isInputFocused ? '11px' : '13px',
                 fontWeight: 700,
                 color: '#5C3A4E',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '8px',
+                gap: '6px',
               }}
             >
               <span>💡</span>
@@ -479,7 +565,7 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
             </div>
           )}
 
-          <div style={{ fontSize: '13px', fontWeight: 600, color: '#5C3A4E' }}>
+          <div style={{ fontSize: isInputFocused ? '11px' : '13px', fontWeight: 600, color: '#5C3A4E', textAlign: isInputFocused ? 'center' : 'left' }}>
             Большие или маленькие буквы — неважно
           </div>
         </div>

@@ -654,7 +654,7 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
               }}
             >
               {question.id === 10 ? (
-                '🫦'
+                '👀'
               ) : (
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                   <rect x="9" y="3" width="6" height="11" rx="3" />

@@ -277,6 +277,35 @@ export const ReactionScreen: React.FC<ReactionScreenProps> = ({
           </div>
         )}
 
+        {/* Special photo preview for hidden_photo_text (Question 7 - Jakub Švec) */}
+        {question.type === 'hidden_photo_text' && isCorrect && question.media?.photo && (
+          <div
+            style={{
+              marginTop: '6px',
+              padding: '5px',
+              background: '#1A1020',
+              borderRadius: '16px',
+              boxShadow: '0 8px 24px rgba(26, 16, 32, 0.25)',
+              transform: 'rotate(-2deg)',
+              maxWidth: '220px',
+              maxHeight: '190px',
+              overflow: 'hidden',
+            }}
+          >
+            <img
+              src={assetUrl(question.media.photo)}
+              alt="Jakub Švec"
+              style={{
+                width: '100%',
+                maxHeight: '180px',
+                objectFit: 'cover',
+                borderRadius: '12px',
+                display: 'block',
+              }}
+            />
+          </div>
+        )}
+
         {/* Special sticker preview for Question 10 (only when correctly guessed) */}
         {question.id === 10 && isCorrect && (
           <div

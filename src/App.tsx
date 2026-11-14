@@ -88,7 +88,7 @@ export const App: React.FC = () => {
     if (questionsData[currentQuestionIndex].type === 'hidden_photo_text') {
       setRevealedPhotos((prev) => ({
         ...prev,
-        [questionsData[currentQuestionIndex].id]: true,
+        [questionsData[currentQuestionIndex].id]: isCorrect,
       }));
     }
     if (isCorrect) {

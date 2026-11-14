@@ -129,9 +129,19 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
       question.aliases,
       question.id
     );
-    if (question.type === 'hidden_photo_text') {
+
+    if (question.type === 'hidden_photo_text' && isCorrect) {
       setPhotoRevealed(true);
+      if (document.activeElement instanceof HTMLElement) {
+        document.activeElement.blur();
+      }
+      setIsInputFocused(false);
+      setTimeout(() => {
+        onAnswer(isCorrect, textInput);
+      }, 1600);
+      return;
     }
+
     onAnswer(isCorrect, textInput);
   };
 

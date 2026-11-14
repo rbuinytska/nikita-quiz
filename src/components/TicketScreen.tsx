@@ -61,29 +61,51 @@ export const TicketScreen: React.FC<TicketScreenProps> = ({ onRestart }) => {
   return (
     <div
       style={{
+        flex: 1,
         width: '100%',
-        height: '100%',
+        minHeight: '100dvh',
         boxSizing: 'border-box',
         background: '#FFD6EA',
         color: '#1A1020',
-        padding: '0 22px 28px',
+        padding: 'max(16px, env(safe-area-inset-top, 16px)) 20px calc(24px + env(safe-area-inset-bottom, 16px))',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+        justifyContent: 'space-between',
         overflowY: 'auto',
+        overflowX: 'hidden',
         position: 'relative',
         zIndex: 1,
       }}
     >
-      <StageBackground showLanyard lanyardLength={88} />
+      <StageBackground />
+
+      {/* Top Lanyard Ribbon */}
+      <svg
+        aria-hidden="true"
+        width="110"
+        height="102"
+        viewBox="0 0 110 102"
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          pointerEvents: 'none',
+          zIndex: 3,
+        }}
+      >
+        <path d="M26 0 L55 90 M84 0 L55 90" stroke="#E0167A" strokeWidth="15" strokeLinecap="round" />
+        <rect x="41" y="78" width="28" height="26" rx="6" fill="#9AA3B5" stroke="#1A1020" strokeWidth="2" />
+      </svg>
 
       {/* Ticket Pass Element */}
       <div
         ref={ticketRef}
         className="sway"
         style={{
-          marginTop: '98px',
-          width: '310px',
+          marginTop: '96px',
+          width: 'min(316px, 90vw)',
           boxSizing: 'border-box',
           borderRadius: '22px',
           background: '#FFFFFF',
@@ -91,6 +113,7 @@ export const TicketScreen: React.FC<TicketScreenProps> = ({ onRestart }) => {
           boxShadow: '0 18px 40px rgba(26, 16, 32, 0.18)',
           overflow: 'hidden',
           zIndex: 2,
+          flexShrink: 0,
         }}
       >
         <div
@@ -154,10 +177,10 @@ export const TicketScreen: React.FC<TicketScreenProps> = ({ onRestart }) => {
             <div style={{ fontSize: '12px', fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#5C3A4E' }}>
               Посадочный пропуск
             </div>
-            <div style={{ fontWeight: 900, fontSize: '46px', lineHeight: 0.95, letterSpacing: '-0.04em', textTransform: 'uppercase' }}>
+            <div style={{ fontWeight: 900, fontSize: 'clamp(36px, 10vw, 46px)', lineHeight: 0.95, letterSpacing: '-0.04em', textTransform: 'uppercase' }}>
               {appConfig.ticket.passenger}
             </div>
-            <div className="font-playfair" style={{ fontStyle: 'italic', fontWeight: 900, fontSize: '20px', color: '#E0167A' }}>
+            <div className="font-playfair" style={{ fontStyle: 'italic', fontWeight: 900, fontSize: 'clamp(17px, 5vw, 20px)', color: '#E0167A' }}>
               вайб: свободное падение
             </div>
           </div>
@@ -165,23 +188,23 @@ export const TicketScreen: React.FC<TicketScreenProps> = ({ onRestart }) => {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '12px', paddingTop: '14px', borderTop: '2px dashed #F3BCD6' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
               <div style={{ fontSize: '12px', fontWeight: 600, color: '#5C3A4E' }}>Формат</div>
-              <div style={{ fontSize: '16px', fontWeight: 800 }}>{appConfig.ticket.format}</div>
+              <div style={{ fontSize: '15px', fontWeight: 800 }}>{appConfig.ticket.format}</div>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
               <div style={{ fontSize: '12px', fontWeight: 600, color: '#5C3A4E' }}>Высота</div>
-              <div style={{ fontSize: '16px', fontWeight: 800 }}>{appConfig.ticket.height} м</div>
+              <div style={{ fontSize: '15px', fontWeight: 800 }}>{appConfig.ticket.height} м</div>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
               <div style={{ fontSize: '12px', fontWeight: 600, color: '#5C3A4E' }}>Дата</div>
-              <div style={{ fontSize: '16px', fontWeight: 800 }}>{appConfig.ticket.date}</div>
+              <div style={{ fontSize: '15px', fontWeight: 800 }}>{appConfig.ticket.date}</div>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
               <div style={{ fontSize: '12px', fontWeight: 600, color: '#5C3A4E' }}>Статус</div>
-              <div style={{ fontSize: '16px', fontWeight: 800 }}>иконка 💅</div>
+              <div style={{ fontSize: '15px', fontWeight: 800 }}>иконка 💅</div>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', gridColumn: 'span 2' }}>
               <div style={{ fontSize: '12px', fontWeight: 600, color: '#5C3A4E' }}>Аэродром</div>
-              <div style={{ fontSize: '16px', fontWeight: 800 }}>{appConfig.ticket.airfield}</div>
+              <div style={{ fontSize: '15px', fontWeight: 800 }}>{appConfig.ticket.airfield}</div>
             </div>
           </div>
 
@@ -191,14 +214,14 @@ export const TicketScreen: React.FC<TicketScreenProps> = ({ onRestart }) => {
         </div>
       </div>
 
-      <div style={{ flexGrow: 1 }} />
+      <div style={{ minHeight: '16px', flexGrow: 1 }} />
 
       {/* Bottom text & actions */}
-      <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '10px', textAlign: 'center', zIndex: 2, marginTop: '16px' }}>
-        <h1 className="font-playfair" style={{ margin: 0, fontStyle: 'italic', fontWeight: 900, fontSize: '32px', lineHeight: 1.05 }}>
+      <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '10px', textAlign: 'center', zIndex: 2, flexShrink: 0 }}>
+        <h1 className="font-playfair" style={{ margin: 0, fontStyle: 'italic', fontWeight: 900, fontSize: 'clamp(26px, 7vw, 32px)', lineHeight: 1.05 }}>
           Вот твой билет <span style={{ color: '#E0167A' }}>в небо</span>
         </h1>
-        <p style={{ margin: 0, fontSize: '15px', lineHeight: 1.45, fontWeight: 500, color: '#5C3A4E' }}>
+        <p style={{ margin: 0, fontSize: '14px', lineHeight: 1.45, fontWeight: 500, color: '#5C3A4E' }}>
           Энергия главного героя — на высоте {appConfig.ticket.height} м
         </p>
 
@@ -221,6 +244,7 @@ export const TicketScreen: React.FC<TicketScreenProps> = ({ onRestart }) => {
               color: '#FFD6EA',
               fontWeight: 800,
               fontSize: '15px',
+              cursor: 'pointer',
             }}
           >
             {downloading ? 'Сохранение...' : 'Сохранить билет'}
@@ -237,6 +261,7 @@ export const TicketScreen: React.FC<TicketScreenProps> = ({ onRestart }) => {
               color: '#1A1020',
               fontWeight: 800,
               fontSize: '15px',
+              cursor: 'pointer',
             }}
           >
             Похвастаться
@@ -254,6 +279,7 @@ export const TicketScreen: React.FC<TicketScreenProps> = ({ onRestart }) => {
             fontWeight: 700,
             textDecoration: 'underline',
             padding: '8px',
+            cursor: 'pointer',
           }}
         >
           Пройти квиз заново
@@ -262,4 +288,3 @@ export const TicketScreen: React.FC<TicketScreenProps> = ({ onRestart }) => {
     </div>
   );
 };
-

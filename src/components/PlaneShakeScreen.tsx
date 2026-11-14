@@ -71,17 +71,20 @@ export const PlaneShakeScreen: React.FC<PlaneShakeScreenProps> = ({ onFinish }) 
     <div
       onClick={handleManualShake}
       style={{
+        flex: 1,
         width: '100%',
-        height: '100%',
+        minHeight: '100dvh',
         boxSizing: 'border-box',
         background: '#FFD6EA',
         color: '#1A1020',
-        padding: '52px 24px 32px',
+        padding: 'max(20px, env(safe-area-inset-top, 20px)) 24px calc(24px + env(safe-area-inset-bottom, 16px))',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+        justifyContent: 'space-between',
         gap: '18px',
-        overflow: 'hidden',
+        overflowY: 'auto',
+        overflowX: 'hidden',
         position: 'relative',
         zIndex: 1,
         textAlign: 'center',
@@ -96,7 +99,7 @@ export const PlaneShakeScreen: React.FC<PlaneShakeScreenProps> = ({ onFinish }) 
         width="100%"
         height="100%"
         viewBox="0 0 390 844"
-        preserveAspectRatio="none"
+        preserveAspectRatio="xMidYMid slice"
         style={{ position: 'absolute', left: 0, top: 0, zIndex: -1, pointerEvents: 'none' }}
       >
         <g className="cl">

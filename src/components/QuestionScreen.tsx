@@ -93,16 +93,19 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
   return (
     <div
       style={{
+        flex: 1,
         width: '100%',
-        minHeight: '100%',
+        minHeight: '100dvh',
         boxSizing: 'border-box',
         background: '#FFD6EA',
         color: '#1A1020',
-        padding: '28px 20px calc(28px + env(safe-area-inset-bottom, 16px))',
+        padding: 'max(16px, env(safe-area-inset-top, 16px)) 20px calc(24px + env(safe-area-inset-bottom, 16px))',
         display: 'flex',
         flexDirection: 'column',
+        justifyContent: 'space-between',
         gap: '14px',
         overflowY: 'auto',
+        overflowX: 'hidden',
         position: 'relative',
         zIndex: 1,
       }}

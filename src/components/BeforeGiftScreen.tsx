@@ -25,28 +25,50 @@ export const BeforeGiftScreen: React.FC<BeforeGiftScreenProps> = ({ onOpen }) =>
   return (
     <div
       style={{
+        flex: 1,
         width: '100%',
-        height: '100%',
+        minHeight: '100dvh',
         boxSizing: 'border-box',
         background: '#FFD6EA',
         color: '#1A1020',
-        padding: '0 22px 32px',
+        padding: 'max(16px, env(safe-area-inset-top, 16px)) 20px calc(24px + env(safe-area-inset-bottom, 16px))',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        overflow: 'hidden',
+        justifyContent: 'space-between',
+        overflowY: 'auto',
+        overflowX: 'hidden',
         position: 'relative',
         zIndex: 1,
       }}
     >
-      <StageBackground showLanyard lanyardLength={118} />
+      <StageBackground />
+
+      {/* Top Lanyard Ribbon */}
+      <svg
+        aria-hidden="true"
+        width="110"
+        height="126"
+        viewBox="0 0 110 126"
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          pointerEvents: 'none',
+          zIndex: 3,
+        }}
+      >
+        <path d="M26 0 L55 114 M84 0 L55 114" stroke="#E0167A" strokeWidth="15" strokeLinecap="round" />
+        <rect x="41" y="102" width="28" height="28" rx="6" fill="#9AA3B5" stroke="#1A1020" strokeWidth="2" />
+      </svg>
 
       {/* Dark Swaying Badge */}
       <div
         className="sway"
         style={{
-          marginTop: '135px',
-          width: '270px',
+          marginTop: '120px',
+          width: 'min(280px, 86vw)',
           boxSizing: 'border-box',
           borderRadius: '22px',
           background: '#1A1020',
@@ -54,6 +76,7 @@ export const BeforeGiftScreen: React.FC<BeforeGiftScreenProps> = ({ onOpen }) =>
           boxShadow: '0 18px 40px rgba(26, 16, 32, 0.22)',
           overflow: 'hidden',
           zIndex: 2,
+          flexShrink: 0,
         }}
       >
         <div
@@ -99,7 +122,7 @@ export const BeforeGiftScreen: React.FC<BeforeGiftScreenProps> = ({ onOpen }) =>
             style={{
               fontStyle: 'italic',
               fontWeight: 900,
-              fontSize: '110px',
+              fontSize: '100px',
               lineHeight: 1,
               color: '#FFD6EA',
             }}
@@ -120,7 +143,7 @@ export const BeforeGiftScreen: React.FC<BeforeGiftScreenProps> = ({ onOpen }) =>
         </div>
       </div>
 
-      <div style={{ flexGrow: 1 }} />
+      <div style={{ minHeight: '16px', flexGrow: 1 }} />
 
       {/* Bottom copy & Button */}
       <div
@@ -131,6 +154,7 @@ export const BeforeGiftScreen: React.FC<BeforeGiftScreenProps> = ({ onOpen }) =>
           gap: '14px',
           textAlign: 'center',
           zIndex: 2,
+          flexShrink: 0,
         }}
       >
         <div
@@ -150,7 +174,7 @@ export const BeforeGiftScreen: React.FC<BeforeGiftScreenProps> = ({ onOpen }) =>
             margin: 0,
             fontStyle: 'italic',
             fontWeight: 900,
-            fontSize: '34px',
+            fontSize: 'clamp(28px, 8vw, 34px)',
             lineHeight: 1.05,
           }}
         >
@@ -159,7 +183,7 @@ export const BeforeGiftScreen: React.FC<BeforeGiftScreenProps> = ({ onOpen }) =>
         <p
           style={{
             margin: 0,
-            fontSize: '16px',
+            fontSize: '15px',
             lineHeight: 1.45,
             fontWeight: 500,
             color: '#5C3A4E',
@@ -176,7 +200,7 @@ export const BeforeGiftScreen: React.FC<BeforeGiftScreenProps> = ({ onOpen }) =>
             alignItems: 'center',
             justifyContent: 'center',
             gap: '10px',
-            height: '62px',
+            height: '60px',
             borderRadius: '999px',
             border: 0,
             background: '#E0167A',
@@ -185,15 +209,15 @@ export const BeforeGiftScreen: React.FC<BeforeGiftScreenProps> = ({ onOpen }) =>
             fontSize: '17px',
             letterSpacing: '0.04em',
             boxShadow: '0 8px 24px rgba(224, 22, 122, 0.35)',
+            cursor: 'pointer',
           }}
         >
           Открывай, я готов
         </button>
         <div style={{ fontSize: '13px', fontWeight: 600, color: '#5C3A4E' }}>
-          Держи телефон крепче
+          Держи телефон крепче 📱
         </div>
       </div>
     </div>
   );
 };
-

@@ -17,28 +17,50 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
   return (
     <div
       style={{
+        flex: 1,
         width: '100%',
-        height: '100%',
+        minHeight: '100dvh',
         boxSizing: 'border-box',
         background: '#FFD6EA',
         color: '#1A1020',
-        padding: '0 22px 32px',
+        padding: 'max(16px, env(safe-area-inset-top, 16px)) 20px calc(24px + env(safe-area-inset-bottom, 16px))',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        overflow: 'hidden',
+        justifyContent: 'space-between',
+        overflowY: 'auto',
+        overflowX: 'hidden',
         position: 'relative',
         zIndex: 1,
       }}
     >
-      <StageBackground showLanyard lanyardLength={148} />
+      <StageBackground />
+
+      {/* Top Lanyard Ribbon anchored to top of screen */}
+      <svg
+        aria-hidden="true"
+        width="110"
+        height="146"
+        viewBox="0 0 110 146"
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          pointerEvents: 'none',
+          zIndex: 3,
+        }}
+      >
+        <path d="M26 0 L55 132 M84 0 L55 132" stroke="#E0167A" strokeWidth="15" strokeLinecap="round" />
+        <rect x="41" y="120" width="28" height="28" rx="6" fill="#9AA3B5" stroke="#1A1020" strokeWidth="2" />
+      </svg>
 
       {/* Swaying VIP Badge */}
       <div
         className="sway"
         style={{
-          marginTop: '155px',
-          width: '300px',
+          marginTop: '138px',
+          width: 'min(304px, 88vw)',
           boxSizing: 'border-box',
           borderRadius: '22px',
           background: '#FFFFFF',
@@ -47,6 +69,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
           overflow: 'hidden',
           position: 'relative',
           zIndex: 2,
+          flexShrink: 0,
         }}
       >
         <div
@@ -137,20 +160,20 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
             <div
               style={{
                 fontWeight: 900,
-                fontSize: '48px',
+                fontSize: 'clamp(36px, 11vw, 48px)',
                 lineHeight: 0.95,
                 letterSpacing: '-0.04em',
                 textTransform: 'uppercase',
               }}
             >
-              {appConfig.recipientName}
+              Никита
             </div>
             <div
-              className="font-playfair"
               style={{
+                fontFamily: "'Playfair Display', Georgia, serif",
                 fontStyle: 'italic',
                 fontWeight: 900,
-                fontSize: '22px',
+                fontSize: 'clamp(18px, 5.5vw, 22px)',
                 color: '#E0167A',
               }}
             >
@@ -169,27 +192,28 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
               <div style={{ fontSize: '12px', fontWeight: 600, color: '#5C3A4E' }}>Статус</div>
-              <div style={{ fontSize: '17px', fontWeight: 800 }}>иконка 💅</div>
+              <div style={{ fontSize: '16px', fontWeight: 800 }}>иконка 💅</div>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
               <div style={{ fontSize: '12px', fontWeight: 600, color: '#5C3A4E' }}>Дата</div>
-              <div style={{ fontSize: '17px', fontWeight: 800 }}>{appConfig.eventDate}</div>
+              <div style={{ fontSize: '16px', fontWeight: 800 }}>{appConfig.eventDate}</div>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
               <div style={{ fontSize: '12px', fontWeight: 600, color: '#5C3A4E' }}>Испытание</div>
-              <div style={{ fontSize: '17px', fontWeight: 800 }}>23 вопроса</div>
+              <div style={{ fontSize: '16px', fontWeight: 800 }}>23 вопроса</div>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
               <div style={{ fontSize: '12px', fontWeight: 600, color: '#5C3A4E' }}>Кринж</div>
-              <div style={{ fontSize: '17px', fontWeight: 800 }}>0%</div>
+              <div style={{ fontSize: '16px', fontWeight: 800 }}>0%</div>
             </div>
           </div>
         </div>
       </div>
 
-      <div style={{ flexGrow: 1 }} />
+      {/* Spacer */}
+      <div style={{ minHeight: '16px', flexGrow: 1 }} />
 
-      {/* Bottom text & CTA */}
+      {/* Bottom Action Area */}
       <div
         style={{
           width: '100%',
@@ -197,36 +221,38 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
           flexDirection: 'column',
           gap: '14px',
           zIndex: 2,
+          flexShrink: 0,
         }}
       >
-        <h1
-          className="font-playfair"
-          style={{
-            margin: 0,
-            textAlign: 'center',
-            fontStyle: 'italic',
-            fontWeight: 900,
-            fontSize: '34px',
-            lineHeight: 1.05,
-          }}
-        >
-          С днюхой, зай!
-        </h1>
-        <p
-          style={{
-            margin: 0,
-            textAlign: 'center',
-            fontSize: '15px',
-            lineHeight: 1.45,
-            fontWeight: 500,
-            color: '#5C3A4E',
-          }}
-        >
-          23 вопроса — по одному за каждый твой год. Пропуск активируется в конце.
-          Ошибёшься — не кринж, подарок всё равно твой
-        </p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <h1
+            style={{
+              margin: 0,
+              textAlign: 'center',
+              fontFamily: "'Playfair Display', Georgia, serif",
+              fontStyle: 'italic',
+              fontWeight: 900,
+              fontSize: 'clamp(28px, 8vw, 34px)',
+              lineHeight: 1.05,
+            }}
+          >
+            С днюхой, зай!
+          </h1>
+          <p
+            style={{
+              margin: 0,
+              textAlign: 'center',
+              fontSize: '14px',
+              lineHeight: 1.45,
+              fontWeight: 500,
+              color: '#5C3A4E',
+            }}
+          >
+            23 вопроса — по одному за каждый твой год. Пропуск активируется в конце. Ошибёшься — не кринж, подарок всё равно твой ✨
+          </p>
+        </div>
 
-        {savedQuestionIndex && savedQuestionIndex > 0 ? (
+        {savedQuestionIndex !== undefined && savedQuestionIndex > 0 ? (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <button
               onClick={onStart}
@@ -236,7 +262,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
                 alignItems: 'center',
                 justifyContent: 'center',
                 gap: '10px',
-                height: '60px',
+                height: '58px',
                 borderRadius: '999px',
                 border: 0,
                 background: '#1A1020',
@@ -244,6 +270,8 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
                 fontWeight: 800,
                 fontSize: '17px',
                 letterSpacing: '0.04em',
+                boxShadow: '0 8px 24px rgba(26, 16, 32, 0.25)',
+                cursor: 'pointer',
               }}
             >
               Продолжить с вопроса {savedQuestionIndex + 1}
@@ -251,21 +279,24 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
                 <path d="M5 12h14M13 6l6 6-6 6" />
               </svg>
             </button>
-            <button
-              onClick={onReset}
-              type="button"
-              style={{
-                background: 'transparent',
-                border: 0,
-                color: '#5C3A4E',
-                fontSize: '14px',
-                fontWeight: 600,
-                textDecoration: 'underline',
-                padding: '6px',
-              }}
-            >
-              Начать сначала
-            </button>
+            {onReset && (
+              <button
+                onClick={onReset}
+                type="button"
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: '#5C3A4E',
+                  fontSize: '13px',
+                  fontWeight: 700,
+                  textDecoration: 'underline',
+                  padding: '6px',
+                  cursor: 'pointer',
+                }}
+              >
+                Начать квиз сначала
+              </button>
+            )}
           </div>
         ) : (
           <button
@@ -276,7 +307,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
               alignItems: 'center',
               justifyContent: 'center',
               gap: '10px',
-              height: '60px',
+              height: '58px',
               borderRadius: '999px',
               border: 0,
               background: '#1A1020',
@@ -284,6 +315,8 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
               fontWeight: 800,
               fontSize: '17px',
               letterSpacing: '0.04em',
+              boxShadow: '0 8px 24px rgba(26, 16, 32, 0.25)',
+              cursor: 'pointer',
             }}
           >
             Погнали
@@ -296,4 +329,3 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
     </div>
   );
 };
-

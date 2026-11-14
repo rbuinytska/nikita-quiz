@@ -204,18 +204,27 @@ html, body {
 
 .mobile-frame {
   width: 100%;
+  max-width: 440px;
   min-height: 100dvh;
   background: #FFD6EA;
   color: #1A1020;
   position: relative;
   overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   display: flex;
   flex-direction: column;
-  margin: 0;
+  margin: 0 auto;
   padding: 0;
   box-shadow: none;
   border: none;
   border-radius: 0;
+}
+
+@media (max-width: 500px) {
+  .mobile-frame {
+    max-width: 100%;
+  }
 }
 
 /* Desktop Only: on laptop and PC screens show a neat phone mockup */

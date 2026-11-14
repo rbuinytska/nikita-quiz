@@ -185,38 +185,8 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
               Вопрос {currentIndex + 1}
             </div>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <div style={{ fontSize: '13px', fontWeight: 800, color: '#5C3A4E' }}>
-              {currentIndex + 1} / {totalQuestions}
-            </div>
-            {question.type !== 'voice' && (
-              <button
-                type="button"
-                onClick={handleFinalSubmit}
-                disabled={isSubmitDisabled}
-                title="Ответить"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                  padding: '5px 12px',
-                  borderRadius: '999px',
-                  border: isSubmitDisabled ? '1px solid rgba(26, 16, 32, 0.12)' : 0,
-                  background: isSubmitDisabled ? 'rgba(26, 16, 32, 0.06)' : '#E0167A',
-                  color: isSubmitDisabled ? '#8A5270' : '#FFFFFF',
-                  fontSize: '12px',
-                  fontWeight: 800,
-                  cursor: isSubmitDisabled ? 'not-allowed' : 'pointer',
-                  boxShadow: isSubmitDisabled ? 'none' : '0 3px 10px rgba(224, 22, 122, 0.35)',
-                  transition: 'all 0.2s ease',
-                }}
-              >
-                <span>Дальше</span>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M5 12h14M13 6l6 6-6 6" />
-                </svg>
-              </button>
-            )}
+          <div style={{ fontSize: '15px', fontWeight: 900 }}>
+            {currentIndex + 1} / {totalQuestions}
           </div>
         </div>
         <div

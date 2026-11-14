@@ -101,41 +101,8 @@ export const ReactionScreen: React.FC<ReactionScreenProps> = ({
               Проверка на входе
             </div>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <div style={{ fontSize: '13px', fontWeight: 800, color: '#5C3A4E' }}>
-              {currentIndex + 1} / {totalQuestions}
-            </div>
-            <button
-              type="button"
-              onClick={onNext}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '5px',
-                padding: '5px 12px',
-                borderRadius: '999px',
-                border: 0,
-                background: isCorrect ? '#E0167A' : '#1A1020',
-                color: '#FFFFFF',
-                fontSize: '12px',
-                fontWeight: 800,
-                cursor: 'pointer',
-                boxShadow: isCorrect ? '0 3px 10px rgba(224, 22, 122, 0.35)' : '0 3px 10px rgba(26, 16, 32, 0.25)',
-                transition: 'all 0.2s ease',
-              }}
-            >
-              <span>{isCorrect ? 'Дальше' : 'Снова'}</span>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
-                {isCorrect ? (
-                  <path d="M5 12h14M13 6l6 6-6 6" />
-                ) : (
-                  <>
-                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-                    <path d="M3 3v5h5" />
-                  </>
-                )}
-              </svg>
-            </button>
+          <div style={{ fontSize: '15px', fontWeight: 900 }}>
+            {currentIndex + 1} / {totalQuestions}
           </div>
         </div>
         <div

@@ -14,10 +14,10 @@ export const appConfig: AppConfig = {
   },
   playlist: [
     {
-      id: 'sirotkin-1',
-      title: 'За водопадами',
-      artist: 'Сироткин',
-      src: 'audio/sirotkin-za-vodopadami.mp3'
+      id: 'birthday-vibe',
+      title: 'Праздничный вайб',
+      artist: 'Party Vibe',
+      src: 'audio/birthday-vibe.mp3'
     }
   ]
 };

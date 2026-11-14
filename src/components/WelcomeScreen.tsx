@@ -200,7 +200,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
               <div style={{ fontSize: '12px', fontWeight: 600, color: '#5C3A4E' }}>Испытание</div>
-              <div style={{ fontSize: '16px', fontWeight: 800 }}>23 вопроса</div>
+              <div style={{ fontSize: '16px', fontWeight: 800 }}>17 вопросов</div>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
               <div style={{ fontSize: '12px', fontWeight: 600, color: '#5C3A4E' }}>Кринж</div>
@@ -248,7 +248,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
               color: '#5C3A4E',
             }}
           >
-            23 вопроса — по одному за каждый твой год. Пропуск активируется в конце. Ошибёшься — не кринж, подарок всё равно твой ✨
+            17 вопросов о тебе и друзьях. Пропуск активируется в конце. Ошибёшься — не кринж, подарок всё равно твой ✨
           </p>
         </div>
 

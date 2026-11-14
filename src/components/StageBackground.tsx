@@ -51,24 +51,21 @@ export const StageBackground: React.FC = () => {
         </radialGradient>
       </defs>
 
-      {/* Spotlight beams — smoothly extended past top and bottom with blurred edges and gradient dissolve */}
+      {/* Spotlight beams — smoothly extended past top and bottom with gradient dissolve (hardware accelerated) */}
       <polygon
         className="beam"
         points="30,-120 90,-120 330,1050 -10,1050"
         fill="url(#beamFadeWhite)"
-        filter="url(#softBeamBlur)"
       />
       <polygon
         className="beam beam2"
         points="160,-120 220,-120 390,1050 50,1050"
         fill="url(#beamFadePink)"
-        filter="url(#softBeamBlur)"
       />
       <polygon
         className="beam beam3"
         points="290,-120 350,-120 440,1050 110,1050"
         fill="url(#beamFadeBlue)"
-        filter="url(#softBeamBlur)"
       />
 
       {/* Soft ambient floor light */}

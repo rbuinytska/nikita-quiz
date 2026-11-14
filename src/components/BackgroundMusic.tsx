@@ -73,7 +73,7 @@ export const BackgroundMusic: React.FC = () => {
       ref={audioRef}
       src={resolveAudioSrc(track.src)}
       loop
-      preload="auto"
+      preload="none"
       style={{ display: 'none' }}
     />
   );

@@ -328,8 +328,8 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
                 objectFit: 'cover',
                 borderRadius: isInputFocused ? '10px' : '16px',
                 background: '#1A1020',
-                opacity: isMediaLoaded ? 1 : 0,
-                transition: 'opacity 0.25s ease',
+                position: 'relative',
+                zIndex: 2,
               }}
             />
           ) : question.type === 'hidden_photo_text' ? (
@@ -341,12 +341,15 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
                 overflow: 'hidden',
                 position: 'relative',
                 background: '#1A1020',
+                zIndex: 2,
               }}
             >
               <img
                 ref={imgRef}
                 src={assetUrl(question.media.photo)}
                 alt=""
+                decoding="async"
+                loading="eager"
                 onLoad={() => setIsMediaLoaded(true)}
                 style={{
                   width: '100%',
@@ -355,8 +358,7 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
                   display: 'block',
                   filter: photoRevealed ? 'none' : 'blur(22px) saturate(1.3)',
                   transform: photoRevealed ? 'scale(1)' : 'scale(1.2)',
-                  opacity: isMediaLoaded ? 1 : 0,
-                  transition: 'opacity 0.25s ease, filter 0.8s ease, transform 0.8s ease',
+                  transition: 'filter 0.8s ease, transform 0.8s ease',
                 }}
               />
               {!photoRevealed && (
@@ -390,6 +392,8 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
               ref={imgRef}
               src={assetUrl(question.media.photo)}
               alt=""
+              decoding="async"
+              loading="eager"
               onLoad={() => setIsMediaLoaded(true)}
               style={{
                 width: '100%',
@@ -397,8 +401,8 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
                 objectFit: isInputFocused ? 'contain' : 'cover',
                 borderRadius: isInputFocused ? '10px' : '16px',
                 display: 'block',
-                opacity: isMediaLoaded ? 1 : 0,
-                transition: 'opacity 0.25s ease',
+                position: 'relative',
+                zIndex: 2,
               }}
             />
           )}

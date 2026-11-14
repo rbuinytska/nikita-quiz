@@ -6,11 +6,11 @@ export const appConfig: AppConfig = {
   fromWhom: 'лучших друзей',
   ticket: {
     passenger: 'НИКИТА',
-    format: 'ТАНДЕМ',
-    height: '4000',
-    date: 'Сезон 2027',
-    airfield: 'DZ Slavica / Аэродром',
-    certificateNumber: 'HERO-23-SKY'
+    format: 'Тандем 3000м',
+    height: '3000',
+    date: 'до 12.11.2027',
+    airfield: 'Holíč (Slovensko)',
+    certificateNumber: 'SZ0015F1015'
   },
   playlist: [
     {

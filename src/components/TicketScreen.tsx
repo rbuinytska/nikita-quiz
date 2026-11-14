@@ -13,6 +13,16 @@ export const TicketScreen: React.FC<TicketScreenProps> = ({ onRestart }) => {
   const [downloading, setDownloading] = useState(false);
   const [copiedNotification, setCopiedNotification] = useState('');
 
+  // Download real PDF voucher
+  const handleDownloadPdf = () => {
+    const link = document.createElement('a');
+    link.href = assetUrl('assets/poukaz-tandemovy-zoskok.pdf');
+    link.download = 'Tandemovy_zoskok_padakom_Nikita.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   // Download ticket as PNG
   const handleSaveTicket = async () => {
     if (!ticketRef.current) return;
@@ -231,36 +241,71 @@ export const TicketScreen: React.FC<TicketScreenProps> = ({ onRestart }) => {
           </div>
         )}
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '10px', marginTop: '4px' }}>
+        {/* Main Action: Download real PDF certificate */}
+        <button
+          type="button"
+          onClick={handleDownloadPdf}
+          style={{
+            width: '100%',
+            height: '60px',
+            borderRadius: '999px',
+            border: 0,
+            background: '#E0167A',
+            color: '#FFFFFF',
+            fontWeight: 800,
+            fontSize: '17px',
+            boxShadow: '0 8px 24px rgba(224, 22, 122, 0.35)',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '10px',
+            marginTop: '4px',
+            transition: 'transform 0.15s ease',
+          }}
+        >
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>
+          <span>Скачать сертификат (PDF)</span>
+        </button>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '10px', marginTop: '2px' }}>
           <button
             type="button"
             onClick={handleSaveTicket}
             disabled={downloading}
             style={{
-              height: '56px',
+              height: '50px',
               borderRadius: '999px',
               border: 0,
               background: '#1A1020',
               color: '#FFD6EA',
               fontWeight: 800,
-              fontSize: '15px',
+              fontSize: '14px',
               cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '6px',
             }}
           >
-            {downloading ? 'Сохранение...' : 'Сохранить билет'}
+            {downloading ? 'Сохранение...' : 'Сохранить бейдж (PNG)'}
           </button>
           <button
             type="button"
             onClick={handleShare}
             style={{
-              height: '56px',
+              height: '50px',
               boxSizing: 'border-box',
               borderRadius: '999px',
               border: '2px solid #1A1020',
               background: '#FFFFFF',
               color: '#1A1020',
               fontWeight: 800,
-              fontSize: '15px',
+              fontSize: '14px',
               cursor: 'pointer',
             }}
           >

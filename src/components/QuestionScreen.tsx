@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { QuestionItem } from '../types';
 import { StageBackground } from './StageBackground';
 import { checkTextAnswer } from '../utils/checker';
@@ -21,11 +21,14 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
   onAnswer,
   onRestart,
 }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+
   // Local state for various question types
   const [textInput, setTextInput] = useState('');
   const [selectedChoice, setSelectedChoice] = useState<number | null>(null);
   const [matchPairs, setMatchPairs] = useState<Record<string, number>>({});
   const [photoRevealed, setPhotoRevealed] = useState(initialPhotoRevealed);
+  const [isInputFocused, setIsInputFocused] = useState(false);
 
   // Reset local state when question changes
   useEffect(() => {
@@ -33,7 +36,20 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
     setSelectedChoice(null);
     setMatchPairs({});
     setPhotoRevealed(initialPhotoRevealed);
+    setIsInputFocused(false);
   }, [question.id, initialPhotoRevealed]);
+
+  useEffect(() => {
+    if (!isInputFocused) return;
+    const preventScroll = () => {
+      window.scrollTo(0, 0);
+      if (containerRef.current) {
+        containerRef.current.scrollTop = 0;
+      }
+    };
+    window.addEventListener('scroll', preventScroll, { passive: true });
+    return () => window.removeEventListener('scroll', preventScroll);
+  }, [isInputFocused]);
 
   const progressPercent = Math.round(((currentIndex + 1) / totalQuestions) * 100);
 
@@ -92,6 +108,7 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
 
   return (
     <div
+      ref={containerRef}
       style={{
         flex: 1,
         width: '100%',
@@ -99,12 +116,14 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
         boxSizing: 'border-box',
         background: '#FFD6EA',
         color: '#1A1020',
-        padding: 'max(16px, env(safe-area-inset-top, 16px)) 20px calc(24px + env(safe-area-inset-bottom, 16px))',
+        padding: isInputFocused
+          ? 'max(10px, env(safe-area-inset-top, 10px)) 20px 16px'
+          : 'max(16px, env(safe-area-inset-top, 16px)) 20px calc(24px + env(safe-area-inset-bottom, 16px))',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'space-between',
-        gap: '14px',
-        overflowY: 'auto',
+        justifyContent: isInputFocused ? 'flex-start' : 'space-between',
+        gap: isInputFocused ? '8px' : '14px',
+        overflowY: isInputFocused ? 'hidden' : 'auto',
         overflowX: 'hidden',
         position: 'relative',
         zIndex: 1,
@@ -177,15 +196,18 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
           style={{
             position: 'relative',
             alignSelf: question.media.orientation === 'portrait' ? 'center' : 'stretch',
-            width: question.media.orientation === 'portrait' ? '180px' : 'auto',
-            height: question.type === 'match' ? '150px' : question.media.orientation === 'portrait' ? '290px' : '230px',
+            width: question.media.orientation === 'portrait' ? (isInputFocused ? '120px' : '180px') : 'auto',
+            height: isInputFocused
+              ? (question.media.orientation === 'portrait' ? '150px' : '130px')
+              : (question.type === 'match' ? '150px' : question.media.orientation === 'portrait' ? '290px' : '230px'),
             flexShrink: 0,
             boxSizing: 'border-box',
             borderRadius: '22px',
             background: '#1A1020',
             padding: '7px',
             boxShadow: '0 14px 30px rgba(26, 16, 32, 0.18)',
-            transform: 'rotate(-1.5deg)',
+            transform: isInputFocused ? 'rotate(0deg)' : 'rotate(-1.5deg)',
+            transition: 'all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1)',
             zIndex: 2,
           }}
         >
@@ -296,8 +318,9 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
           margin: '4px 4px 0',
           fontStyle: 'italic',
           fontWeight: 900,
-          fontSize: question.question.length > 50 ? '24px' : '30px',
-          lineHeight: 1.1,
+          fontSize: isInputFocused ? '19px' : (question.question.length > 50 ? '24px' : '30px'),
+          lineHeight: 1.15,
+          transition: 'font-size 0.2s ease',
           zIndex: 2,
         }}
       >
@@ -324,13 +347,23 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
             type="text"
             value={textInput}
             onChange={(e) => setTextInput(e.target.value)}
+            onFocus={() => {
+              setIsInputFocused(true);
+              if (containerRef.current) {
+                containerRef.current.scrollTop = 0;
+              }
+              window.scrollTo(0, 0);
+            }}
+            onBlur={() => {
+              setIsInputFocused(false);
+            }}
             onKeyDown={(e) => {
               if (e.key === 'Enter') handleTextSubmit();
             }}
             placeholder={question.placeholder || 'Напиши ответ'}
             autoComplete="off"
             style={{
-              height: '60px',
+              height: isInputFocused ? '50px' : '60px',
               boxSizing: 'border-box',
               padding: '0 20px',
               borderRadius: '18px',
@@ -340,6 +373,7 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
               fontSize: '18px',
               fontWeight: 700,
               outlineColor: '#E0167A',
+              transition: 'height 0.2s ease',
             }}
           />
 

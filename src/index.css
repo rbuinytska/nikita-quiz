@@ -25,6 +25,8 @@ html, body {
   color: var(--text-dark);
   font-family: 'Montserrat', system-ui, -apple-system, sans-serif;
   overflow: hidden;
+  position: fixed;
+  inset: 0;
 }
 
 #root {

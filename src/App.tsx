@@ -19,6 +19,8 @@ export const App: React.FC = () => {
   const [answers, setAnswers] = useState<Record<number, any>>({});
   const [score, setScore] = useState<number>(0);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const [attempt, setAttempt] = useState<number>(0);
+  const [revealedPhotos, setRevealedPhotos] = useState<Record<number, boolean>>({});
 
   // Load progress from localStorage on mount
   useEffect(() => {
@@ -72,6 +74,8 @@ export const App: React.FC = () => {
     setLastAnswerCorrect(true);
     setAnswers({});
     setScore(0);
+    setAttempt(0);
+    setRevealedPhotos({});
   };
 
   // Handler: question answered
@@ -81,6 +85,12 @@ export const App: React.FC = () => {
       ...prev,
       [questionsData[currentQuestionIndex].id]: userAnswer,
     }));
+    if (questionsData[currentQuestionIndex].type === 'hidden_photo_text') {
+      setRevealedPhotos((prev) => ({
+        ...prev,
+        [questionsData[currentQuestionIndex].id]: true,
+      }));
+    }
     if (isCorrect) {
       setScore((prev) => prev + 1);
     }
@@ -89,8 +99,16 @@ export const App: React.FC = () => {
 
   // Handler: move from reaction to next step
   const handleNextFromReaction = () => {
+    if (!lastAnswerCorrect) {
+      // If incorrect, return to the SAME question to guess again!
+      setAttempt((prev) => prev + 1);
+      setScreen('question');
+      return;
+    }
+
     if (currentQuestionIndex < questionsData.length - 1) {
       setCurrentQuestionIndex((prev) => prev + 1);
+      setAttempt(0);
       setScreen('question');
     } else {
       setScreen('before_gift');
@@ -113,10 +131,11 @@ export const App: React.FC = () => {
 
         {screen === 'question' && (
           <QuestionScreen
-            key={questionsData[currentQuestionIndex].id}
+            key={`${questionsData[currentQuestionIndex].id}-${attempt}`}
             question={questionsData[currentQuestionIndex]}
             currentIndex={currentQuestionIndex}
             totalQuestions={questionsData.length}
+            initialPhotoRevealed={Boolean(revealedPhotos[questionsData[currentQuestionIndex].id])}
             onAnswer={handleAnswer}
             onRestart={handleReset}
           />

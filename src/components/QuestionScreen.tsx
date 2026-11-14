@@ -8,6 +8,7 @@ interface QuestionScreenProps {
   question: QuestionItem;
   currentIndex: number;
   totalQuestions: number;
+  initialPhotoRevealed?: boolean;
   onAnswer: (isCorrect: boolean, userAnswer: any) => void;
   onRestart?: () => void;
 }
@@ -16,6 +17,7 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
   question,
   currentIndex,
   totalQuestions,
+  initialPhotoRevealed = false,
   onAnswer,
   onRestart,
 }) => {
@@ -23,17 +25,15 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
   const [textInput, setTextInput] = useState('');
   const [selectedChoice, setSelectedChoice] = useState<number | null>(null);
   const [matchPairs, setMatchPairs] = useState<Record<string, number>>({});
-  const [photoRevealed, setPhotoRevealed] = useState(false);
-  const [photoAnswerCorrect, setPhotoAnswerCorrect] = useState<boolean | null>(null);
+  const [photoRevealed, setPhotoRevealed] = useState(initialPhotoRevealed);
 
   // Reset local state when question changes
   useEffect(() => {
     setTextInput('');
     setSelectedChoice(null);
     setMatchPairs({});
-    setPhotoRevealed(false);
-    setPhotoAnswerCorrect(null);
-  }, [question.id]);
+    setPhotoRevealed(initialPhotoRevealed);
+  }, [question.id, initialPhotoRevealed]);
 
   const progressPercent = Math.round(((currentIndex + 1) / totalQuestions) * 100);
 
@@ -41,24 +41,15 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
   const handleTextSubmit = () => {
     if (!textInput.trim()) return;
 
-    if (question.type === 'hidden_photo_text' && !photoRevealed) {
-      const isCorrect = checkTextAnswer(
-        textInput,
-        question.answer,
-        question.aliases,
-        question.id
-      );
-      setPhotoAnswerCorrect(isCorrect);
-      setPhotoRevealed(true);
-      return;
-    }
-
     const isCorrect = checkTextAnswer(
       textInput,
       question.answer,
       question.aliases,
       question.id
     );
+    if (question.type === 'hidden_photo_text') {
+      setPhotoRevealed(true);
+    }
     onAnswer(isCorrect, textInput);
   };
 
@@ -343,12 +334,8 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
               boxSizing: 'border-box',
               padding: '0 20px',
               borderRadius: '18px',
-              border: photoRevealed
-                ? (photoAnswerCorrect ? '2px solid #1F9D55' : '2px solid #E0167A')
-                : '2px solid #1A1020',
-              background: photoRevealed
-                ? (photoAnswerCorrect ? '#E8F7EE' : '#FFE9F3')
-                : '#FFFFFF',
+              border: '2px solid #1A1020',
+              background: '#FFFFFF',
               color: '#1A1020',
               fontSize: '18px',
               fontWeight: 700,
@@ -377,21 +364,9 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
             </div>
           )}
 
-          {photoRevealed ? (
-            photoAnswerCorrect ? (
-              <div style={{ fontSize: '14px', fontWeight: 800, color: '#1F9D55' }}>
-                ✓ {question.revealText || `Точно. Это был ${question.answer}`}
-              </div>
-            ) : (
-              <div style={{ fontSize: '14px', fontWeight: 800, color: '#E0167A' }}>
-                ✗ Мимо! На самом деле это {question.answer}
-              </div>
-            )
-          ) : (
-            <div style={{ fontSize: '13px', fontWeight: 600, color: '#5C3A4E' }}>
-              Большие или маленькие буквы — неважно
-            </div>
-          )}
+          <div style={{ fontSize: '13px', fontWeight: 600, color: '#5C3A4E' }}>
+            Большие или маленькие буквы — неважно
+          </div>
         </div>
       )}
 
@@ -626,50 +601,26 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
       {/* Bottom Submit Button (for non-voice questions) */}
       {question.type !== 'voice' && (
         <div style={{ zIndex: 10, paddingTop: '14px', flexShrink: 0 }}>
-          {question.type === 'hidden_photo_text' && photoRevealed ? (
-            <button
-              type="button"
-              onClick={() => {
-                onAnswer(Boolean(photoAnswerCorrect), textInput);
-              }}
-              style={{
-                width: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                height: '58px',
-                borderRadius: '999px',
-                border: 0,
-                background: '#E0167A',
-                color: '#FFFFFF',
-                fontWeight: 800,
-                fontSize: '17px',
-                boxShadow: '0 8px 24px rgba(224, 22, 122, 0.35)',
-              }}
-            >
-              Дальше
-            </button>
-          ) : (
-            <button
-              type="button"
-              disabled={
-                question.type === 'text' || question.type === 'hidden_photo_text'
-                  ? !textInput.trim()
-                  : question.type === 'choice'
-                  ? selectedChoice === null
-                  : question.type === 'match'
-                  ? Object.keys(question.pairs || {}).some((p) => matchPairs[p] === undefined)
-                  : false
+          <button
+            type="button"
+            disabled={
+              question.type === 'text' || question.type === 'hidden_photo_text'
+                ? !textInput.trim()
+                : question.type === 'choice'
+                ? selectedChoice === null
+                : question.type === 'match'
+                ? Object.keys(question.pairs || {}).some((p) => matchPairs[p] === undefined)
+                : false
+            }
+            onClick={() => {
+              if (question.type === 'text' || question.type === 'hidden_photo_text') {
+                handleTextSubmit();
+              } else if (question.type === 'choice') {
+                handleChoiceSubmit();
+              } else if (question.type === 'match') {
+                handleMatchSubmit();
               }
-              onClick={() => {
-                if (question.type === 'text' || question.type === 'hidden_photo_text') {
-                  handleTextSubmit();
-                } else if (question.type === 'choice') {
-                  handleChoiceSubmit();
-                } else if (question.type === 'match') {
-                  handleMatchSubmit();
-                }
-              }}
+            }}
               style={{
                 width: '100%',
                 display: 'flex',
@@ -719,7 +670,6 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
             >
               Мой ответ финальный
             </button>
-          )}
         </div>
       )}
     </div>

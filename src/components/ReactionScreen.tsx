@@ -45,19 +45,6 @@ export const ReactionScreen: React.FC<ReactionScreenProps> = ({
 
   const progressPercent = Math.round(((currentIndex + 1) / totalQuestions) * 100);
 
-  // Formatting correct answer to display if incorrect
-  const displayCorrectAnswer = useMemo(() => {
-    if (question.type === 'choice' && question.options && question.correct !== undefined) {
-      return question.options[question.correct];
-    }
-    if (question.type === 'match' && question.pairs && question.options) {
-      return Object.entries(question.pairs)
-        .map(([name, idx]) => `${name}: ${question.options![idx]}`)
-        .join('; ');
-    }
-    return question.answer || '';
-  }, [question]);
-
   return (
     <div
       style={{
@@ -280,23 +267,18 @@ export const ReactionScreen: React.FC<ReactionScreenProps> = ({
             {question.revealText || 'Это было красиво и прямо в цель!'}
           </p>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-            {displayCorrectAnswer && (
-              <div style={{ fontSize: '15px', fontWeight: 700, color: '#1A1020' }}>
-                Правильно:{' '}
-                <span style={{ color: '#E0167A', fontWeight: 800 }}>
-                  {displayCorrectAnswer}
-                </span>
-              </div>
-            )}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <div style={{ fontSize: '16px', fontWeight: 700, color: '#1A1020' }}>
+              Попробуй подумать ещё разок!
+            </div>
             <div style={{ fontSize: '15px', fontWeight: 600, color: '#5C3A4E' }}>
-              Но ты всё равно иконка 💅
+              Но ты всё равно иконка 💅 Правильный ответ сам себя не найдёт
             </div>
           </div>
         )}
 
-        {/* Special sticker preview for Question 10 */}
-        {question.id === 10 && (
+        {/* Special sticker preview for Question 10 (only when correctly guessed) */}
+        {question.id === 10 && isCorrect && (
           <div
             style={{
               marginTop: '4px',
@@ -314,7 +296,7 @@ export const ReactionScreen: React.FC<ReactionScreenProps> = ({
           </div>
         )}
 
-        {/* Badge: one step closer */}
+        {/* Badge status */}
         <div
           style={{
             display: 'flex',
@@ -329,14 +311,26 @@ export const ReactionScreen: React.FC<ReactionScreenProps> = ({
             marginTop: '4px',
           }}
         >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1020" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z" />
-          </svg>
-          Ещё на шаг ближе к подарку
+          {isCorrect ? (
+            <>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1020" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z" />
+              </svg>
+              Ещё на шаг ближе к подарку
+            </>
+          ) : (
+            <>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E0167A" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                <path d="M3 3v5h5" />
+              </svg>
+              Никита, соберись! Давай снова
+            </>
+          )}
         </div>
       </div>
 
-      {/* Button Next */}
+      {/* Button Next / Retry */}
       <div style={{ zIndex: 2 }}>
         <button
           onClick={onNext}
@@ -355,12 +349,26 @@ export const ReactionScreen: React.FC<ReactionScreenProps> = ({
             fontWeight: 800,
             fontSize: '17px',
             letterSpacing: '0.04em',
+            boxShadow: '0 8px 24px rgba(26, 16, 32, 0.25)',
+            cursor: 'pointer',
           }}
         >
-          Дальше
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFD6EA" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M5 12h14M13 6l6 6-6 6" />
-          </svg>
+          {isCorrect ? (
+            <>
+              Дальше
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFD6EA" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            </>
+          ) : (
+            <>
+              Попробовать снова
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFD6EA" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                <path d="M3 3v5h5" />
+              </svg>
+            </>
+          )}
         </button>
       </div>
     </div>

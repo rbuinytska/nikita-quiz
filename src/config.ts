@@ -14,16 +14,10 @@ export const appConfig: AppConfig = {
   },
   playlist: [
     {
-      id: 'track1',
-      title: 'Tanti Auguri / Birthday Vibe',
-      artist: 'Праздничный вайб',
-      src: '/audio/track1.mp3'
-    },
-    {
-      id: 'track2',
-      title: 'Главный герой дня',
-      artist: 'Slay Energy',
-      src: '/audio/track2.mp3'
+      id: 'sirotkin-1',
+      title: 'За водопадами',
+      artist: 'Сироткин',
+      src: 'audio/sirotkin-za-vodopadami.mp3'
     }
   ]
 };

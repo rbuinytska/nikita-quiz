@@ -1,6 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { appConfig } from '../config';
 
+const resolveAudioSrc = (src: string) => {
+  if (src.startsWith('http://') || src.startsWith('https://')) return src;
+  const clean = src.replace(/^\.?\//, '');
+  const base = import.meta.env.BASE_URL.endsWith('/')
+    ? import.meta.env.BASE_URL
+    : import.meta.env.BASE_URL + '/';
+  return `${base}${clean}`;
+};
+
 export const BackgroundMusic: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
@@ -111,7 +120,7 @@ export const BackgroundMusic: React.FC = () => {
     setUseSynth(false);
     stopSynth();
     if (audioRef.current) {
-      audioRef.current.src = appConfig.playlist[nextIdx].src;
+      audioRef.current.src = resolveAudioSrc(appConfig.playlist[nextIdx].src);
       if (isPlaying) {
         audioRef.current.play().catch(() => {
           setUseSynth(true);
@@ -191,7 +200,7 @@ export const BackgroundMusic: React.FC = () => {
     >
       <audio
         ref={audioRef}
-        src={currentTrack.src}
+        src={resolveAudioSrc(currentTrack.src)}
         loop
         preload="auto"
         onError={() => {

@@ -322,7 +322,7 @@ export const FakeGiftScreen: React.FC<FakeGiftScreenProps> = ({ onContinue }) =>
                 color: '#E0167A',
               }}
             >
-              А теперь серьёзно... Пристегни ремни! 🪂🔥
+              А теперь серьёзно... Пристегни ремни! ⚡🔥
             </div>
 
             <button

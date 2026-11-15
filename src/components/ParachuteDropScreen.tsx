@@ -172,9 +172,10 @@ export const ParachuteDropScreen: React.FC<ParachuteDropScreenProps> = ({ onView
             fontWeight: 800,
             fontSize: '17px',
             boxShadow: '0 8px 24px rgba(26, 16, 32, 0.25)',
+            cursor: 'pointer',
           }}
         >
-          Посмотреть билет
+          Задуть торт со стриптизом 🎂
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFD6EA" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
             <path d="M5 12h14M13 6l6 6-6 6" />
           </svg>

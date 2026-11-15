@@ -7,6 +7,7 @@ import { ReactionScreen } from './components/ReactionScreen';
 import { BeforeGiftScreen } from './components/BeforeGiftScreen';
 import { PlaneShakeScreen } from './components/PlaneShakeScreen';
 import { ParachuteDropScreen } from './components/ParachuteDropScreen';
+import { BirthdayCakeScreen } from './components/BirthdayCakeScreen';
 import { TicketScreen } from './components/TicketScreen';
 import { BackgroundMusic } from './components/BackgroundMusic';
 
@@ -162,11 +163,15 @@ export const App: React.FC = () => {
         )}
 
         {screen === 'parachute_drop' && (
-          <ParachuteDropScreen onViewTicket={() => setScreen('ticket')} />
+          <ParachuteDropScreen onViewTicket={() => setScreen('cake')} />
+        )}
+
+        {screen === 'cake' && (
+          <BirthdayCakeScreen onContinue={() => setScreen('ticket')} />
         )}
 
         {screen === 'ticket' && (
-          <TicketScreen onRestart={handleReset} />
+          <TicketScreen onRestart={handleReset} onShowCake={() => setScreen('cake')} />
         )}
       </div>
     </div>

@@ -5,9 +5,10 @@ import { assetUrl } from '../utils/assets';
 
 interface TicketScreenProps {
   onRestart: () => void;
+  onShowCake?: () => void;
 }
 
-export const TicketScreen: React.FC<TicketScreenProps> = ({ onRestart }) => {
+export const TicketScreen: React.FC<TicketScreenProps> = ({ onRestart, onShowCake }) => {
   const ticketRef = useRef<HTMLDivElement>(null);
   const [copiedNotification, setCopiedNotification] = useState('');
 
@@ -290,6 +291,31 @@ export const TicketScreen: React.FC<TicketScreenProps> = ({ onRestart }) => {
             <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
           </svg>
         </button>
+
+        {onShowCake && (
+          <button
+            type="button"
+            onClick={onShowCake}
+            style={{
+              width: '100%',
+              height: '48px',
+              boxSizing: 'border-box',
+              borderRadius: '999px',
+              border: '1.5px solid #E0167A',
+              background: '#FFE9F3',
+              color: '#E0167A',
+              fontWeight: 800,
+              fontSize: '14px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '6px',
+            }}
+          >
+            <span>🎂 Посмотреть праздничный торт</span>
+          </button>
+        )}
 
         <button
           type="button"

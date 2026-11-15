@@ -55,6 +55,7 @@ export type ScreenState =
   | 'before_gift'
   | 'plane_shake'
   | 'parachute_drop'
+  | 'cake'
   | 'ticket';
 
 export interface QuizProgress {

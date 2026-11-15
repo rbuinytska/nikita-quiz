@@ -12,7 +12,7 @@ import { FakeGiftScreen } from './components/FakeGiftScreen';
 import { TicketScreen } from './components/TicketScreen';
 import { BackgroundMusic } from './components/BackgroundMusic';
 
-const STORAGE_KEY = 'nikita_quiz_progress_v1';
+const STORAGE_KEY = 'nikita_quiz_progress_v2';
 
 export const App: React.FC = () => {
   const [screen, setScreen] = useState<ScreenState>('welcome');
@@ -27,13 +27,18 @@ export const App: React.FC = () => {
   // Load progress from localStorage on mount
   useEffect(() => {
     try {
+      // Support ?reset=1 query parameter to force reset state
+      const params = new URLSearchParams(window.location.search);
+      if (params.has('reset') || params.has('restart') || params.has('new')) {
+        localStorage.removeItem(STORAGE_KEY);
+        localStorage.removeItem('nikita_quiz_progress_v1');
+        window.history.replaceState({}, '', window.location.pathname);
+        return;
+      }
+
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed: QuizProgress = JSON.parse(saved);
-        if (parsed.currentScreen) {
-          const s = (parsed.currentScreen as string) === 'before_gift' ? 'fake_gift' : parsed.currentScreen;
-          setScreen(s);
-        }
         if (typeof parsed.currentQuestionIndex === 'number') {
           setCurrentQuestionIndex(Math.min(parsed.currentQuestionIndex, questionsData.length - 1));
         }

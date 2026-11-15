@@ -1,9 +1,7 @@
 import React, { useRef, useState } from 'react';
-import { toPng } from 'html-to-image';
 import { StageBackground } from './StageBackground';
 import { appConfig } from '../config';
 import { assetUrl } from '../utils/assets';
-import { NIKITA_PHOTO_BASE64 } from '../data/nikitaPhotoBase64';
 
 interface TicketScreenProps {
   onRestart: () => void;
@@ -11,7 +9,6 @@ interface TicketScreenProps {
 
 export const TicketScreen: React.FC<TicketScreenProps> = ({ onRestart }) => {
   const ticketRef = useRef<HTMLDivElement>(null);
-  const [downloading, setDownloading] = useState(false);
   const [copiedNotification, setCopiedNotification] = useState('');
 
   // Download real PDF voucher
@@ -24,57 +21,7 @@ export const TicketScreen: React.FC<TicketScreenProps> = ({ onRestart }) => {
     document.body.removeChild(link);
   };
 
-  // Download ticket as PNG or save directly to Photos
-  const handleSaveTicket = async () => {
-    if (!ticketRef.current) return;
-    try {
-      setDownloading(true);
-      const el = ticketRef.current;
-      const hadSway = el.classList.contains('sway');
-      if (hadSway) el.classList.remove('sway');
-
-      // Warm up and capture cleanly without cacheBust (cacheBust corrupts data URIs)
-      await toPng(el, { pixelRatio: 2, backgroundColor: '#FFFFFF' });
-      const dataUrl = await toPng(el, {
-        pixelRatio: 3,
-        backgroundColor: '#FFFFFF',
-      });
-
-      if (hadSway) el.classList.add('sway');
-
-      const filename = 'Bejdzh_Nikita_Parashyut.png';
-
-      // Convert dataUrl to blob and File for native saving directly to Photos
-      const res = await fetch(dataUrl);
-      const blob = await res.blob();
-      const file = new File([blob], filename, { type: 'image/png' });
-
-      // If Web Share with files is supported (iOS Safari), opening share sheet gives "Save Image" directly to Photos!
-      if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        await navigator.share({
-          files: [file],
-          title: 'Бейдж Никиты: Проход в небо',
-        });
-        return;
-      }
-
-      // Fallback: standard file download with valid ASCII filename
-      const link = document.createElement('a');
-      link.download = filename;
-      link.href = dataUrl;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } catch (err: any) {
-      if (err?.name !== 'AbortError') {
-        console.error('Error saving ticket:', err);
-      }
-    } finally {
-      setDownloading(false);
-    }
-  };
-
-  // Share ticket
+  // Share ticket / link
   const handleShare = async () => {
     if (navigator.share) {
       try {
@@ -89,13 +36,13 @@ export const TicketScreen: React.FC<TicketScreenProps> = ({ onRestart }) => {
       }
     }
 
-    // Fallback: copy link or notify
+    // Fallback: copy link
     try {
       await navigator.clipboard.writeText(window.location.href);
       setCopiedNotification('Ссылка скопирована!');
       setTimeout(() => setCopiedNotification(''), 2500);
     } catch {
-      handleSaveTicket();
+      // Ignored
     }
   };
 
@@ -214,7 +161,7 @@ export const TicketScreen: React.FC<TicketScreenProps> = ({ onRestart }) => {
                 boxSizing: 'border-box',
                 borderRadius: '50%',
                 border: '3px solid #E0167A',
-                background: `#FFE9F3 url(${NIKITA_PHOTO_BASE64}) center/cover no-repeat`,
+                background: `#FFE9F3 url(${assetUrl('assets/nikita.jpg')}) center/cover no-repeat`,
                 boxShadow: '0 4px 14px rgba(224, 22, 122, 0.25)',
                 overflow: 'hidden',
                 display: 'flex',
@@ -223,7 +170,7 @@ export const TicketScreen: React.FC<TicketScreenProps> = ({ onRestart }) => {
               }}
             >
               <img
-                src={NIKITA_PHOTO_BASE64}
+                src={assetUrl('assets/nikita.jpg')}
                 alt="Никита"
                 style={{
                   width: '100%',
@@ -287,7 +234,7 @@ export const TicketScreen: React.FC<TicketScreenProps> = ({ onRestart }) => {
           onClick={handleDownloadPdf}
           style={{
             width: '100%',
-            height: '60px',
+            height: '58px',
             borderRadius: '999px',
             border: 0,
             background: '#E0167A',
@@ -312,46 +259,37 @@ export const TicketScreen: React.FC<TicketScreenProps> = ({ onRestart }) => {
           <span>Скачать сертификат (PDF)</span>
         </button>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '10px', marginTop: '2px' }}>
-          <button
-            type="button"
-            onClick={handleSaveTicket}
-            disabled={downloading}
-            style={{
-              height: '50px',
-              borderRadius: '999px',
-              border: 0,
-              background: '#1A1020',
-              color: '#FFD6EA',
-              fontWeight: 800,
-              fontSize: '14px',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '6px',
-            }}
-          >
-            {downloading ? 'Сохранение...' : '📸 Сохранить в Фото'}
-          </button>
-          <button
-            type="button"
-            onClick={handleShare}
-            style={{
-              height: '50px',
-              boxSizing: 'border-box',
-              borderRadius: '999px',
-              border: '2px solid #1A1020',
-              background: '#FFFFFF',
-              color: '#1A1020',
-              fontWeight: 800,
-              fontSize: '14px',
-              cursor: 'pointer',
-            }}
-          >
-            Похвастаться
-          </button>
-        </div>
+        {/* Secondary Action: Похвастаться */}
+        <button
+          type="button"
+          onClick={handleShare}
+          style={{
+            width: '100%',
+            height: '52px',
+            boxSizing: 'border-box',
+            borderRadius: '999px',
+            border: '2px solid #1A1020',
+            background: '#FFFFFF',
+            color: '#1A1020',
+            fontWeight: 800,
+            fontSize: '15px',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px',
+            marginTop: '2px',
+          }}
+        >
+          <span>Похвастаться</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1020" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="18" cy="5" r="3" />
+            <circle cx="6" cy="12" r="3" />
+            <circle cx="18" cy="19" r="3" />
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+          </svg>
+        </button>
 
         <button
           type="button"
@@ -365,6 +303,7 @@ export const TicketScreen: React.FC<TicketScreenProps> = ({ onRestart }) => {
             textDecoration: 'underline',
             padding: '8px',
             cursor: 'pointer',
+            marginTop: '2px',
           }}
         >
           Пройти квиз заново

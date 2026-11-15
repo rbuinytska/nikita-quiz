@@ -9,42 +9,88 @@ export const PlaneShakeScreen: React.FC<PlaneShakeScreenProps> = ({ onFinish }) 
   const [flash, setFlash] = useState(false);
   const completedRef = useRef(false);
 
-  useEffect(() => {
-    let lastTime = Date.now();
-    let lastX = 0, lastY = 0, lastZ = 0;
+  const [needsPermission, setNeedsPermission] = useState<boolean>(() => {
+    return (
+      typeof window !== 'undefined' &&
+      typeof (window as any).DeviceMotionEvent?.requestPermission === 'function'
+    );
+  });
+  const [permissionGranted, setPermissionGranted] = useState<boolean>(false);
 
-    const handleMotion = (event: DeviceMotionEvent) => {
-      if (completedRef.current) return;
-      const current = event.accelerationIncludingGravity;
-      if (!current) return;
+  const lastTimeRef = useRef(Date.now());
+  const lastXRef = useRef(0);
+  const lastYRef = useRef(0);
+  const lastZRef = useRef(0);
 
-      const now = Date.now();
-      if (now - lastTime > 100) {
-        const diffTime = now - lastTime;
-        lastTime = now;
+  const handleMotion = (event: DeviceMotionEvent) => {
+    if (completedRef.current) return;
+    const current = event.acceleration || event.accelerationIncludingGravity;
+    if (!current) return;
 
-        const x = current.x || 0;
-        const y = current.y || 0;
-        const z = current.z || 0;
+    const now = Date.now();
+    const diffTime = now - lastTimeRef.current;
+    if (diffTime > 70) {
+      lastTimeRef.current = now;
 
-        const speed = Math.abs(x + y + z - lastX - lastY - lastZ) / diffTime * 10000;
+      const x = current.x || 0;
+      const y = current.y || 0;
+      const z = current.z || 0;
 
-        if (speed > 450) {
-          setShakeProgress((prev) => {
-            const next = Math.min(100, prev + 15);
-            return next;
-          });
-        }
+      const deltaX = Math.abs(x - lastXRef.current);
+      const deltaY = Math.abs(y - lastYRef.current);
+      const deltaZ = Math.abs(z - lastZRef.current);
+      const totalDelta = deltaX + deltaY + deltaZ;
 
-        lastX = x;
-        lastY = y;
-        lastZ = z;
+      // Sensitive shake calculation
+      if (totalDelta > 3.2 || (totalDelta / diffTime) * 10000 > 160) {
+        setShakeProgress((prev) => {
+          const next = Math.min(100, prev + 20);
+          try {
+            navigator.vibrate?.(40);
+          } catch {
+            // ignore
+          }
+          return next;
+        });
       }
-    };
 
-    window.addEventListener('devicemotion', handleMotion);
-    return () => window.removeEventListener('devicemotion', handleMotion);
-  }, []);
+      lastXRef.current = x;
+      lastYRef.current = y;
+      lastZRef.current = z;
+    }
+  };
+
+  const requestMotionPermission = async (e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    try {
+      const DME = (window as any).DeviceMotionEvent;
+      if (typeof DME?.requestPermission === 'function') {
+        const res = await DME.requestPermission();
+        if (res === 'granted') {
+          setPermissionGranted(true);
+          setNeedsPermission(false);
+          window.addEventListener('devicemotion', handleMotion);
+        }
+      }
+    } catch (err) {
+      console.warn('Error requesting motion permission:', err);
+    }
+  };
+
+  useEffect(() => {
+    // If browser doesn't require explicit permission (e.g. Android or desktop)
+    if (!needsPermission) {
+      window.addEventListener('devicemotion', handleMotion);
+      return () => window.removeEventListener('devicemotion', handleMotion);
+    }
+  }, [needsPermission]);
+
+  useEffect(() => {
+    if (permissionGranted) {
+      window.addEventListener('devicemotion', handleMotion);
+      return () => window.removeEventListener('devicemotion', handleMotion);
+    }
+  }, [permissionGranted]);
 
   // When 100% reached, trigger vibration, flash, and transition
   useEffect(() => {
@@ -63,13 +109,19 @@ export const PlaneShakeScreen: React.FC<PlaneShakeScreenProps> = ({ onFinish }) 
     }
   }, [shakeProgress, onFinish]);
 
-  const handleManualShake = () => {
+  const handleScreenTap = () => {
+    if (needsPermission && !permissionGranted) {
+      requestMotionPermission();
+    }
+    try {
+      navigator.vibrate?.(40);
+    } catch {}
     setShakeProgress((prev) => Math.min(100, prev + 25));
   };
 
   return (
     <div
-      onClick={handleManualShake}
+      onClick={handleScreenTap}
       style={{
         flex: 1,
         width: '100%',
@@ -82,7 +134,7 @@ export const PlaneShakeScreen: React.FC<PlaneShakeScreenProps> = ({ onFinish }) 
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'space-between',
-        gap: '18px',
+        gap: '16px',
         overflowY: 'auto',
         overflowX: 'hidden',
         position: 'relative',
@@ -138,44 +190,67 @@ export const PlaneShakeScreen: React.FC<PlaneShakeScreenProps> = ({ onFinish }) 
         aria-label="Розовый самолёт"
         width="290"
         height="140"
-        viewBox="0 0 290 140"
-        style={{ marginTop: '14px', flexShrink: 0 }}
+        viewBox="0 0 320 160"
+        style={{ margin: '4px 0', flexShrink: 0 }}
       >
-        <path d="M30 70 Q30 50 60 48 L230 48 Q272 50 280 70 Q272 92 230 94 L60 94 Q30 92 30 70 Z" fill="#FFFFFF" stroke="#1A1020" strokeWidth="3" />
-        <path d="M44 48 L22 10 L50 10 L84 48 Z" fill="#E0167A" stroke="#1A1020" strokeWidth="3" strokeLinejoin="round" />
-        <path d="M130 80 L180 80 L150 132 L120 132 Z" fill="#E0167A" stroke="#1A1020" strokeWidth="3" strokeLinejoin="round" />
-        <path d="M36 74 H276" stroke="#E0167A" strokeWidth="6" />
-        <circle cx="200" cy="62" r="6" fill="#7FC8F8" stroke="#1A1020" strokeWidth="2" />
-        <circle cx="178" cy="62" r="6" fill="#7FC8F8" stroke="#1A1020" strokeWidth="2" />
-        <circle cx="156" cy="62" r="6" fill="#7FC8F8" stroke="#1A1020" strokeWidth="2" />
-        <circle cx="134" cy="62" r="6" fill="#7FC8F8" stroke="#1A1020" strokeWidth="2" />
-        <path d="M250 58 Q268 60 272 70 L250 70 Z" fill="#7FC8F8" stroke="#1A1020" strokeWidth="2" strokeLinejoin="round" />
-        <rect x="88" y="54" width="22" height="36" rx="5" fill="#FFE9F3" stroke="#1A1020" strokeWidth="2.5" />
-        <text x="99" y="76" textAnchor="middle" fontFamily="Montserrat, system-ui, sans-serif" fontWeight="900" fontSize="16" fill="#E0167A">
-          ?
-        </text>
+        <path d="M40 85 C100 83 230 83 270 78 C285 76 295 82 290 88 C280 94 250 96 220 96 C160 96 70 96 40 93 Z" fill="#FFFFFF" stroke="#1A1020" strokeWidth="4" />
+        <path d="M140 86 L110 32 C106 25 116 23 125 28 L180 86 Z" fill="#E0167A" stroke="#1A1020" strokeWidth="4" strokeLinejoin="round" />
+        <path d="M150 93 L120 145 C116 151 126 154 135 149 L190 93 Z" fill="#E0167A" stroke="#1A1020" strokeWidth="4" strokeLinejoin="round" />
+        <path d="M45 85 L30 45 C28 40 35 38 42 42 L65 85 Z" fill="#E0167A" stroke="#1A1020" strokeWidth="4" strokeLinejoin="round" />
+        <ellipse cx="260" cy="84" rx="9" ry="5" fill="#7FC8F8" stroke="#1A1020" strokeWidth="2.5" />
+        <ellipse cx="235" cy="85" rx="5" ry="5" fill="#7FC8F8" />
+        <ellipse cx="215" cy="85" rx="5" ry="5" fill="#7FC8F8" />
+        <ellipse cx="195" cy="85" rx="5" ry="5" fill="#7FC8F8" />
+        <ellipse cx="175" cy="85" rx="5" ry="5" fill="#7FC8F8" />
       </svg>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+      {/* Text instructions */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxWidth: '320px' }}>
         <h1
           className="font-playfair"
           style={{
             margin: 0,
             fontStyle: 'italic',
             fontWeight: 900,
-            fontSize: '44px',
-            lineHeight: 1,
+            fontSize: 'clamp(28px, 8vw, 36px)',
+            lineHeight: 1.05,
           }}
         >
-          Потряси<br />телефон!
+          Держи телефон <span style={{ color: '#E0167A' }}>обеими руками!</span>
         </h1>
         <p style={{ margin: 0, fontSize: '15px', lineHeight: 1.45, fontWeight: 600, color: '#5C3A4E' }}>
-          Сильнее. Ещё сильнее. Кажется, сейчас что-то выпадет…
+          Наш самолёт на высоте 4000 метров. Потряси телефон изо всех сил или тапай по экрану! ✈️
         </p>
+
+        {/* Explicit iOS Permission Button if needed */}
+        {needsPermission && !permissionGranted && (
+          <button
+            type="button"
+            onClick={requestMotionPermission}
+            style={{
+              background: '#E0167A',
+              color: '#FFFFFF',
+              border: '2px solid #1A1020',
+              borderRadius: '999px',
+              padding: '12px 18px',
+              fontSize: '14px',
+              fontWeight: 900,
+              cursor: 'pointer',
+              boxShadow: '0 4px 14px rgba(224, 22, 122, 0.4)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              marginTop: '4px',
+            }}
+          >
+            <span>📱 Разрешить датчик тряски</span>
+          </button>
+        )}
       </div>
 
-      {/* Phone shake illustration */}
-      <div style={{ flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      {/* Shake phone icon */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <svg
           className="shake-icon"
           aria-hidden="true"
@@ -195,17 +270,17 @@ export const PlaneShakeScreen: React.FC<PlaneShakeScreenProps> = ({ onFinish }) 
       </div>
 
       {/* Progress bar */}
-      <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+      <div style={{ width: '100%', maxWidth: '340px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', fontWeight: 800 }}>
-          <span>Тряска</span>
+          <span>Тряска самолёта</span>
           <span>{shakeProgress}%</span>
         </div>
         <div
           aria-hidden="true"
           style={{
-            height: '16px',
+            height: '18px',
             boxSizing: 'border-box',
-            borderRadius: '8px',
+            borderRadius: '9px',
             border: '2px solid #1A1020',
             background: '#FFFFFF',
             overflow: 'hidden',
@@ -215,7 +290,7 @@ export const PlaneShakeScreen: React.FC<PlaneShakeScreenProps> = ({ onFinish }) 
             style={{
               width: `${shakeProgress}%`,
               height: '100%',
-              background: '#E0167A',
+              background: 'linear-gradient(90deg, #F472B6, #E0167A)',
               transition: 'width 0.2s ease',
             }}
           />
@@ -238,6 +313,7 @@ export const PlaneShakeScreen: React.FC<PlaneShakeScreenProps> = ({ onFinish }) 
           fontWeight: 700,
           color: '#5C3A4E',
           textDecoration: 'underline',
+          cursor: 'pointer',
         }}
       >
         Не трясётся? Нажми сюда
@@ -245,4 +321,3 @@ export const PlaneShakeScreen: React.FC<PlaneShakeScreenProps> = ({ onFinish }) 
     </div>
   );
 };
-

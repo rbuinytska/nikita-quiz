@@ -327,7 +327,17 @@ export const FakeGiftScreen: React.FC<FakeGiftScreenProps> = ({ onContinue }) =>
 
             <button
               type="button"
-              onClick={onContinue}
+              onClick={async () => {
+                try {
+                  const DME = (window as any).DeviceMotionEvent;
+                  if (typeof DME?.requestPermission === 'function') {
+                    await DME.requestPermission();
+                  }
+                } catch (e) {
+                  console.warn('Motion permission request error:', e);
+                }
+                onContinue();
+              }}
               style={{
                 width: '100%',
                 background: '#E0167A',

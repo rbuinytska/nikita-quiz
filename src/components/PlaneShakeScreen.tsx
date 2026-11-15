@@ -7,6 +7,7 @@ interface PlaneShakeScreenProps {
 export const PlaneShakeScreen: React.FC<PlaneShakeScreenProps> = ({ onFinish }) => {
   const [shakeProgress, setShakeProgress] = useState(0);
   const [flash, setFlash] = useState(false);
+  const [isRumbling, setIsRumbling] = useState(false);
   const completedRef = useRef(false);
 
   const [needsPermission, setNeedsPermission] = useState<boolean>(() => {
@@ -18,40 +19,81 @@ export const PlaneShakeScreen: React.FC<PlaneShakeScreenProps> = ({ onFinish }) 
   const [permissionGranted, setPermissionGranted] = useState<boolean>(false);
 
   const lastTimeRef = useRef(Date.now());
+  const isInitializedRef = useRef(false);
   const lastXRef = useRef(0);
   const lastYRef = useRef(0);
   const lastZRef = useRef(0);
 
+  // Synthesize cockpit turbulence sound via Web Audio API (works on iOS & Android!)
+  const playRumbleSound = () => {
+    try {
+      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(70, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(32, ctx.currentTime + 0.22);
+
+      gain.gain.setValueAtTime(0.2, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.22);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start();
+      osc.stop(ctx.currentTime + 0.22);
+    } catch {
+      // Audio context might be restricted before user tap
+    }
+  };
+
+  const triggerShakeEffect = (amount = 20) => {
+    setIsRumbling(true);
+    playRumbleSound();
+    try {
+      navigator.vibrate?.(45);
+    } catch {}
+
+    setShakeProgress((prev) => Math.min(100, prev + amount));
+    setTimeout(() => setIsRumbling(false), 220);
+  };
+
   const handleMotion = (event: DeviceMotionEvent) => {
     if (completedRef.current) return;
-    const current = event.acceleration || event.accelerationIncludingGravity;
-    if (!current) return;
+
+    // Prioritize accelerationIncludingGravity because on iOS event.acceleration.x is often null!
+    const acc = event.accelerationIncludingGravity || event.acceleration;
+    if (!acc) return;
+
+    const x = typeof acc.x === 'number' ? acc.x : 0;
+    const y = typeof acc.y === 'number' ? acc.y : 0;
+    const z = typeof acc.z === 'number' ? acc.z : 0;
+
+    if (!isInitializedRef.current) {
+      isInitializedRef.current = true;
+      lastXRef.current = x;
+      lastYRef.current = y;
+      lastZRef.current = z;
+      lastTimeRef.current = Date.now();
+      return;
+    }
 
     const now = Date.now();
     const diffTime = now - lastTimeRef.current;
     if (diffTime > 70) {
       lastTimeRef.current = now;
 
-      const x = current.x || 0;
-      const y = current.y || 0;
-      const z = current.z || 0;
-
       const deltaX = Math.abs(x - lastXRef.current);
       const deltaY = Math.abs(y - lastYRef.current);
       const deltaZ = Math.abs(z - lastZRef.current);
       const totalDelta = deltaX + deltaY + deltaZ;
 
-      // Sensitive shake calculation
-      if (totalDelta > 3.2 || (totalDelta / diffTime) * 10000 > 160) {
-        setShakeProgress((prev) => {
-          const next = Math.min(100, prev + 20);
-          try {
-            navigator.vibrate?.(40);
-          } catch {
-            // ignore
-          }
-          return next;
-        });
+      // Realistic and responsive threshold
+      if (totalDelta > 2.8 || (totalDelta / diffTime) * 10000 > 140) {
+        triggerShakeEffect(20);
       }
 
       lastXRef.current = x;
@@ -75,10 +117,10 @@ export const PlaneShakeScreen: React.FC<PlaneShakeScreenProps> = ({ onFinish }) 
     } catch (err) {
       console.warn('Error requesting motion permission:', err);
     }
+    triggerShakeEffect(25);
   };
 
   useEffect(() => {
-    // If browser doesn't require explicit permission (e.g. Android or desktop)
     if (!needsPermission) {
       window.addEventListener('devicemotion', handleMotion);
       return () => window.removeEventListener('devicemotion', handleMotion);
@@ -92,15 +134,13 @@ export const PlaneShakeScreen: React.FC<PlaneShakeScreenProps> = ({ onFinish }) 
     }
   }, [permissionGranted]);
 
-  // When 100% reached, trigger vibration, flash, and transition
+  // When 100% reached, trigger flash, victory sound, and transition
   useEffect(() => {
     if (shakeProgress >= 100 && !completedRef.current) {
       completedRef.current = true;
       try {
-        navigator.vibrate?.(200);
-      } catch {
-        // ignore
-      }
+        navigator.vibrate?.(250);
+      } catch {}
       setFlash(true);
       const timer = setTimeout(() => {
         onFinish();
@@ -113,10 +153,7 @@ export const PlaneShakeScreen: React.FC<PlaneShakeScreenProps> = ({ onFinish }) 
     if (needsPermission && !permissionGranted) {
       requestMotionPermission();
     }
-    try {
-      navigator.vibrate?.(40);
-    } catch {}
-    setShakeProgress((prev) => Math.min(100, prev + 25));
+    triggerShakeEffect(25);
   };
 
   return (
@@ -141,6 +178,8 @@ export const PlaneShakeScreen: React.FC<PlaneShakeScreenProps> = ({ onFinish }) 
         zIndex: 1,
         textAlign: 'center',
         cursor: 'pointer',
+        transform: isRumbling ? 'translate(-3px, 2px) rotate(-0.5deg)' : 'none',
+        transition: 'transform 0.05s ease',
       }}
     >
       {flash && <div className="screen-flash" />}
@@ -183,9 +222,9 @@ export const PlaneShakeScreen: React.FC<PlaneShakeScreenProps> = ({ onFinish }) 
         Подарок уже в воздухе
       </div>
 
-      {/* Airplane SVG */}
+      {/* Airplane SVG with turbulence animation */}
       <svg
-        className="fly"
+        className={isRumbling ? 'shake-icon' : 'fly'}
         role="img"
         aria-label="Розовый самолёт"
         width="290"
@@ -222,7 +261,6 @@ export const PlaneShakeScreen: React.FC<PlaneShakeScreenProps> = ({ onFinish }) 
           Наш самолёт на высоте 4000 метров. Потряси телефон изо всех сил или тапай по экрану! ✈️
         </p>
 
-        {/* Explicit iOS Permission Button if needed */}
         {needsPermission && !permissionGranted && (
           <button
             type="button"

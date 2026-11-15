@@ -200,10 +200,10 @@ export const questionsData: QuestionItem[] = [
     },
     question: 'Какая песня набрала рекордные 758 баллов — максимум за всю историю Евровидения?',
     options: [
-      'Loreen — Euphoria',
-      'Salvador Sobral — Amar pelos dois',
-      'Duncan Laurence — Arcade',
-      'Nemo — The Code'
+      'Fairytale',
+      'Amar pelos dois',
+      'Tattoo',
+      '1944'
     ],
     correct: 1,
     revealText: 'Именно! Salvador Sobral в 2017 году набрал 758 баллов — исторический рекорд Евровидения 🏆'

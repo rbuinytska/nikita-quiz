@@ -126,35 +126,6 @@ export const App: React.FC = () => {
         {/* Floating background music controller */}
         <BackgroundMusic />
 
-        {/* Debug Quick Jump Bar */}
-        <div
-          style={{
-            position: 'fixed',
-            top: 'max(8px, env(safe-area-inset-top, 8px))',
-            right: '10px',
-            zIndex: 99999,
-          }}
-        >
-          <button
-            type="button"
-            onClick={() => setScreen('cake')}
-            style={{
-              background: 'rgba(26, 16, 32, 0.88)',
-              color: '#FFD6EA',
-              border: '1.5px solid #E0167A',
-              borderRadius: '999px',
-              padding: '6px 12px',
-              fontSize: '11px',
-              fontWeight: 800,
-              cursor: 'pointer',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.25)',
-              backdropFilter: 'blur(8px)',
-            }}
-          >
-            🏁 К концу квиза
-          </button>
-        </div>
-
         {screen === 'welcome' && (
           <WelcomeScreen
             onStart={() => setScreen('question')}

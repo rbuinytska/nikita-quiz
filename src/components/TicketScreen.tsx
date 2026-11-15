@@ -3,6 +3,7 @@ import { toPng } from 'html-to-image';
 import { StageBackground } from './StageBackground';
 import { appConfig } from '../config';
 import { assetUrl } from '../utils/assets';
+import { NIKITA_PHOTO_BASE64 } from '../data/nikitaPhotoBase64';
 
 interface TicketScreenProps {
   onRestart: () => void;
@@ -23,21 +24,50 @@ export const TicketScreen: React.FC<TicketScreenProps> = ({ onRestart }) => {
     document.body.removeChild(link);
   };
 
-  // Download ticket as PNG
+  // Download ticket as PNG or save directly to Photos
   const handleSaveTicket = async () => {
     if (!ticketRef.current) return;
     try {
       setDownloading(true);
-      const dataUrl = await toPng(ticketRef.current, {
+      const el = ticketRef.current;
+      const hadSway = el.classList.contains('sway');
+      if (hadSway) el.classList.remove('sway');
+
+      const dataUrl = await toPng(el, {
         cacheBust: true,
-        pixelRatio: 2,
+        pixelRatio: 3,
+        backgroundColor: '#FFFFFF',
       });
+
+      if (hadSway) el.classList.add('sway');
+
+      const filename = 'Bejdzh_Nikita_Parashyut.png';
+
+      // Convert dataUrl to blob and File for native saving directly to Photos
+      const res = await fetch(dataUrl);
+      const blob = await res.blob();
+      const file = new File([blob], filename, { type: 'image/png' });
+
+      // If Web Share with files is supported (iOS Safari), opening share sheet gives "Save Image" directly to Photos!
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: 'Бейдж Никиты: Проход в небо',
+        });
+        return;
+      }
+
+      // Fallback: standard file download with valid ASCII filename
       const link = document.createElement('a');
-      link.download = `билет-никита-парашют.png`;
+      link.download = filename;
       link.href = dataUrl;
+      document.body.appendChild(link);
       link.click();
-    } catch (err) {
-      console.error('Error saving ticket:', err);
+      document.body.removeChild(link);
+    } catch (err: any) {
+      if (err?.name !== 'AbortError') {
+        console.error('Error saving ticket:', err);
+      }
     } finally {
       setDownloading(false);
     }
@@ -180,7 +210,7 @@ export const TicketScreen: React.FC<TicketScreenProps> = ({ onRestart }) => {
               overflow: 'hidden',
             }}
           >
-            <img src={assetUrl('assets/nikita.jpg')} alt="Никита" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+            <img src={NIKITA_PHOTO_BASE64} alt="Никита" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
@@ -292,7 +322,7 @@ export const TicketScreen: React.FC<TicketScreenProps> = ({ onRestart }) => {
               gap: '6px',
             }}
           >
-            {downloading ? 'Сохранение...' : 'Сохранить бейдж (PNG)'}
+            {downloading ? 'Сохранение...' : '📸 Сохранить в Фото'}
           </button>
           <button
             type="button"

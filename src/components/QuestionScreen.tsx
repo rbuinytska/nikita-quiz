@@ -53,11 +53,19 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
 
   // Preload next 2 question media items (images, posters, and videos) in background for instant loading
   useEffect(() => {
+    if (question.media?.revealAfterAnswer) {
+      const revealImg = new Image();
+      revealImg.src = assetUrl(question.media.revealAfterAnswer);
+    }
     for (let i = 1; i <= 2; i++) {
       const nextQ = questionsData[currentIndex + i];
       if (nextQ?.media?.photo) {
         const img = new Image();
         img.src = assetUrl(nextQ.media.photo);
+      }
+      if (nextQ?.media?.revealAfterAnswer) {
+        const revealImg = new Image();
+        revealImg.src = assetUrl(nextQ.media.revealAfterAnswer);
       }
       if (nextQ?.media?.poster) {
         const poster = new Image();
@@ -69,7 +77,7 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
         video.src = assetUrl(nextQ.media.video);
       }
     }
-  }, [currentIndex]);
+  }, [currentIndex, question.id]);
 
   // Listen to visualViewport for mobile virtual keyboard changes
   useEffect(() => {
@@ -130,7 +138,7 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
       question.id
     );
 
-    if (question.type === 'hidden_photo_text' && isCorrect) {
+    if ((question.type === 'hidden_photo_text' || question.media?.revealAfterAnswer) && isCorrect) {
       setPhotoRevealed(true);
       if (document.activeElement instanceof HTMLElement) {
         document.activeElement.blur();
@@ -409,7 +417,11 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
           ) : (
             <img
               ref={imgRef}
-              src={assetUrl(question.media.photo)}
+              src={assetUrl(
+                photoRevealed && question.media.revealAfterAnswer
+                  ? question.media.revealAfterAnswer
+                  : question.media.photo
+              )}
               alt=""
               decoding="async"
               loading="eager"

@@ -145,12 +145,16 @@ export const questionsData: QuestionItem[] = [
     id: 14,
     type: 'text',
     badge: 'инкогнито',
-    media: { photo: '/assets/q14.jpg' },
+    media: {
+      photo: '/assets/q14.jpg',
+      revealAfterAnswer: '/assets/q14-unblurred.jpg'
+    },
     question: 'Кто заблюрен на фото?',
     hint: 'У него есть друг с неприятным запахом',
     placeholder: 'Кто это?',
     answer: 'Сергей',
-    aliases: ['Серёжа', 'Сережа', 'Серега', 'Серёга', 'Sergej', 'Sergey']
+    aliases: ['Серёжа', 'Сережа', 'Серега', 'Серёга', 'Sergej', 'Sergey'],
+    revealText: 'Да! Это же Серёга!'
   },
   {
     id: 15,

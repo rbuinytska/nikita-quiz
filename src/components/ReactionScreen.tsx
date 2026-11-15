@@ -277,8 +277,8 @@ export const ReactionScreen: React.FC<ReactionScreenProps> = ({
           </div>
         )}
 
-        {/* Special photo preview for hidden_photo_text (Question 7 - Jakub Švec) */}
-        {question.type === 'hidden_photo_text' && isCorrect && question.media?.photo && (
+        {/* Special photo preview for hidden_photo_text or revealAfterAnswer (Question 7 - Jakub Švec, Question 14 - Seryoga) */}
+        {(question.type === 'hidden_photo_text' || question.media?.revealAfterAnswer) && isCorrect && (
           <div
             style={{
               marginTop: '6px',
@@ -293,8 +293,8 @@ export const ReactionScreen: React.FC<ReactionScreenProps> = ({
             }}
           >
             <img
-              src={assetUrl(question.media.photo)}
-              alt="Jakub Švec"
+              src={assetUrl(question.media?.revealAfterAnswer || question.media?.photo || '')}
+              alt={question.revealText || 'Ответ'}
               style={{
                 width: '100%',
                 maxHeight: '180px',

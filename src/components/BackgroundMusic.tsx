@@ -147,34 +147,52 @@ export const BackgroundMusic: React.FC = () => {
         style={{ display: 'none' }}
       />
 
-      {/* Floating Music Toggle Button in Top-Left */}
+      {/* Floating Music Toggle Docked to the Side Edge */}
       <button
         type="button"
         onClick={handleToggle}
+        aria-label={isPlaying ? 'Выключить музыку' : 'Включить музыку'}
         title={isPlaying ? 'Выключить музыку' : 'Включить музыку'}
         style={{
           position: 'fixed',
-          top: 'max(8px, env(safe-area-inset-top, 8px))',
-          left: '10px',
+          top: '38%',
+          right: 0,
+          transform: 'translateY(-50%)',
           zIndex: 99999,
-          background: isPlaying ? 'rgba(26, 16, 32, 0.88)' : 'rgba(255, 255, 255, 0.92)',
+          background: isPlaying ? 'rgba(26, 16, 32, 0.92)' : 'rgba(255, 255, 255, 0.92)',
           color: isPlaying ? '#FFD6EA' : '#1A1020',
           border: isPlaying ? '1.5px solid #E0167A' : '1.5px solid #1A1020',
-          borderRadius: '999px',
-          padding: '6px 11px',
-          fontSize: '11px',
-          fontWeight: 800,
+          borderRight: 'none',
+          borderRadius: '16px 0 0 16px',
+          padding: '8px 6px 8px 9px',
           cursor: 'pointer',
           display: 'flex',
+          flexDirection: 'column',
           alignItems: 'center',
-          gap: '5px',
-          boxShadow: '0 4px 12px rgba(0,0,0,0.22)',
+          gap: '3px',
+          boxShadow: '-3px 4px 14px rgba(0,0,0,0.25)',
           backdropFilter: 'blur(8px)',
-          transition: 'all 0.15s ease',
+          transition: 'all 0.2s ease',
+          userSelect: 'none',
+          WebkitTapHighlightColor: 'transparent',
         }}
       >
-        <span style={{ fontSize: '13px' }}>{isPlaying ? '🎵' : '🔇'}</span>
-        <span>{isPlaying ? 'Музыка' : 'Вкл звук'}</span>
+        <span className={isPlaying ? 'pulse' : ''} style={{ fontSize: '15px', lineHeight: 1 }}>
+          {isPlaying ? '🎵' : '🔇'}
+        </span>
+        <span
+          style={{
+            writingMode: 'vertical-rl',
+            textOrientation: 'mixed',
+            fontSize: '9px',
+            fontWeight: 900,
+            letterSpacing: '0.08em',
+            textTransform: 'uppercase',
+            opacity: 0.85,
+          }}
+        >
+          {isPlaying ? 'Звук' : 'Вкл'}
+        </span>
       </button>
     </>
   );

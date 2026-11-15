@@ -25,7 +25,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
         boxSizing: 'border-box',
         background: '#FFD6EA',
         color: '#1A1020',
-        padding: 'max(16px, env(safe-area-inset-top, 16px)) 20px calc(24px + env(safe-area-inset-bottom, 16px))',
+        padding: 'max(48px, calc(env(safe-area-inset-top, 16px) + 36px)) 20px calc(24px + env(safe-area-inset-bottom, 16px))',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',

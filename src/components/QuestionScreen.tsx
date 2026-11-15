@@ -247,7 +247,7 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
         color: '#1A1020',
         padding: isInputFocused
           ? 'max(6px, env(safe-area-inset-top, 6px)) 16px 8px'
-          : 'max(14px, env(safe-area-inset-top, 14px)) 20px calc(20px + env(safe-area-inset-bottom, 16px))',
+          : 'max(46px, calc(env(safe-area-inset-top, 14px) + 36px)) 20px calc(20px + env(safe-area-inset-bottom, 16px))',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'flex-start',

@@ -30,7 +30,10 @@ export const App: React.FC = () => {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed: QuizProgress = JSON.parse(saved);
-        if (parsed.currentScreen) setScreen(parsed.currentScreen);
+        if (parsed.currentScreen) {
+          const s = (parsed.currentScreen as string) === 'before_gift' ? 'fake_gift' : parsed.currentScreen;
+          setScreen(s);
+        }
         if (typeof parsed.currentQuestionIndex === 'number') {
           setCurrentQuestionIndex(Math.min(parsed.currentQuestionIndex, questionsData.length - 1));
         }

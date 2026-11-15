@@ -124,7 +124,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
               boxSizing: 'border-box',
               borderRadius: '36px',
               border: '3px solid #FFFFFF',
-              background: '#FFE9F3',
+              background: `#FFE9F3 url(${assetUrl('assets/nikita.jpg')}) center/cover no-repeat`,
               boxShadow: '0 6px 16px rgba(26, 16, 32, 0.2)',
               display: 'flex',
               alignItems: 'center',

@@ -33,8 +33,9 @@ export const TicketScreen: React.FC<TicketScreenProps> = ({ onRestart }) => {
       const hadSway = el.classList.contains('sway');
       if (hadSway) el.classList.remove('sway');
 
+      // Warm up and capture cleanly without cacheBust (cacheBust corrupts data URIs)
+      await toPng(el, { pixelRatio: 2, backgroundColor: '#FFFFFF' });
       const dataUrl = await toPng(el, {
-        cacheBust: true,
         pixelRatio: 3,
         backgroundColor: '#FFFFFF',
       });
@@ -161,8 +162,8 @@ export const TicketScreen: React.FC<TicketScreenProps> = ({ onRestart }) => {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            gap: '10px',
-            padding: '14px 20px 14px',
+            gap: '8px',
+            padding: '12px 16px 14px',
             background: '#E0167A',
             color: '#FFFFFF',
           }}
@@ -172,14 +173,14 @@ export const TicketScreen: React.FC<TicketScreenProps> = ({ onRestart }) => {
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '10px',
+              gap: '8px',
               fontWeight: 900,
-              fontSize: '15px',
-              letterSpacing: '0.22em',
+              fontSize: '14px',
+              letterSpacing: '0.18em',
               textTransform: 'uppercase',
             }}
           >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
               <path d="M3 10a9 7 0 0 1 18 0" />
               <path d="M3 10q2.25-1.5 4.5 0q2.25-1.5 4.5 0q2.25-1.5 4.5 0q2.25-1.5 4.5 0" />
               <path d="M3 10l8 9M21 10l-8 9M7.5 10l3.5 9M16.5 10l-3.5 9" />
@@ -189,39 +190,48 @@ export const TicketScreen: React.FC<TicketScreenProps> = ({ onRestart }) => {
           </div>
         </div>
 
-        <div style={{ padding: '18px 22px 18px', display: 'flex', flexDirection: 'column', gap: '14px', position: 'relative' }}>
-          {/* Avatar Photo */}
-          <div
-            style={{
-              width: '72px',
-              height: '72px',
-              flexShrink: 0,
-              boxSizing: 'border-box',
-              borderRadius: '36px',
-              border: '3px solid #FFFFFF',
-              background: '#FFE9F3',
-              boxShadow: '0 6px 16px rgba(26, 16, 32, 0.2)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              position: 'absolute',
-              right: '18px',
-              top: '-40px',
-              overflow: 'hidden',
-            }}
-          >
-            <img src={NIKITA_PHOTO_BASE64} alt="Никита" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-          </div>
+        <div style={{ padding: '16px 20px 18px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+          {/* Passenger Info & Avatar in clean flex row */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '10px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', minWidth: 0 }}>
+              <div style={{ fontSize: '11px', fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#5C3A4E' }}>
+                Посадочный пропуск
+              </div>
+              <div style={{ fontWeight: 900, fontSize: 'clamp(32px, 8.5vw, 42px)', lineHeight: 0.95, letterSpacing: '-0.04em', textTransform: 'uppercase', color: '#1A1020' }}>
+                {appConfig.ticket.passenger}
+              </div>
+              <div className="font-playfair" style={{ fontStyle: 'italic', fontWeight: 900, fontSize: 'clamp(14px, 4.2vw, 17px)', color: '#E0167A', marginTop: '2px' }}>
+                вайб: свободное падение
+              </div>
+            </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-            <div style={{ fontSize: '12px', fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#5C3A4E' }}>
-              Посадочный пропуск
-            </div>
-            <div style={{ fontWeight: 900, fontSize: 'clamp(36px, 10vw, 46px)', lineHeight: 0.95, letterSpacing: '-0.04em', textTransform: 'uppercase' }}>
-              {appConfig.ticket.passenger}
-            </div>
-            <div className="font-playfair" style={{ fontStyle: 'italic', fontWeight: 900, fontSize: 'clamp(17px, 5vw, 20px)', color: '#E0167A' }}>
-              вайб: свободное падение
+            {/* Avatar Photo */}
+            <div
+              style={{
+                width: '68px',
+                height: '68px',
+                flexShrink: 0,
+                boxSizing: 'border-box',
+                borderRadius: '50%',
+                border: '3px solid #E0167A',
+                background: `#FFE9F3 url(${NIKITA_PHOTO_BASE64}) center/cover no-repeat`,
+                boxShadow: '0 4px 14px rgba(224, 22, 122, 0.25)',
+                overflow: 'hidden',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <img
+                src={NIKITA_PHOTO_BASE64}
+                alt="Никита"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  display: 'block',
+                }}
+              />
             </div>
           </div>
 

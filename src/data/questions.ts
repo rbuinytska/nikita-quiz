@@ -188,6 +188,25 @@ export const questionsData: QuestionItem[] = [
     question: 'Где ты познакомился с этим человеком?',
     options: ['Grindr', 'Badoo', 'Tinder', 'LinkedIn'],
     correct: 2
+  },
+  {
+    id: 18,
+    type: 'choice',
+    badge: 'евровидение',
+    media: {
+      video: '/assets/q18-video.mp4',
+      poster: '/assets/q18-poster.jpg',
+      orientation: 'landscape'
+    },
+    question: 'Какая песня набрала рекордные 758 баллов — максимум за всю историю Евровидения?',
+    options: [
+      'Alexander Rybak — Fairytale',
+      'Salvador Sobral — Amar pelos dois',
+      'Kalush Orchestra — Stefania',
+      'Loreen — Tattoo'
+    ],
+    correct: 1,
+    revealText: 'Именно! Salvador Sobral в 2017 году набрал 758 баллов — исторический рекорд Евровидения 🏆'
   }
 ];
 

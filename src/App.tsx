@@ -124,6 +124,7 @@ export const App: React.FC = () => {
         {screen === 'welcome' && (
           <WelcomeScreen
             onStart={() => setScreen('question')}
+            totalQuestions={questionsData.length}
             savedQuestionIndex={currentQuestionIndex > 0 ? currentQuestionIndex : undefined}
             onReset={handleReset}
           />

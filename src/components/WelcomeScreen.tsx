@@ -6,12 +6,14 @@ import { assetUrl } from '../utils/assets';
 interface WelcomeScreenProps {
   onStart: () => void;
   savedQuestionIndex?: number;
+  totalQuestions?: number;
   onReset?: () => void;
 }
 
 export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
   onStart,
   savedQuestionIndex,
+  totalQuestions = 18,
   onReset,
 }) => {
   return (
@@ -200,7 +202,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
               <div style={{ fontSize: '12px', fontWeight: 600, color: '#5C3A4E' }}>Испытание</div>
-              <div style={{ fontSize: '16px', fontWeight: 800 }}>17 вопросов</div>
+              <div style={{ fontSize: '16px', fontWeight: 800 }}>{totalQuestions} вопросов</div>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
               <div style={{ fontSize: '12px', fontWeight: 600, color: '#5C3A4E' }}>Кринж</div>
@@ -248,7 +250,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
               color: '#5C3A4E',
             }}
           >
-            17 вопросов о тебе и друзьях. Пропуск активируется только в конце. Никаких поблажек — соберись! 🔥
+            {totalQuestions} вопросов о тебе и друзьях. Пропуск активируется только в конце. Никаких поблажек — соберись! 🔥
           </p>
         </div>
 

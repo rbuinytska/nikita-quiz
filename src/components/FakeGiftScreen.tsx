@@ -134,10 +134,10 @@ export const FakeGiftScreen: React.FC<FakeGiftScreenProps> = ({ onContinue }) =>
         <div
           style={{
             width: '100%',
-            height: '200px',
+            height: '270px',
             position: 'relative',
             overflow: 'hidden',
-            background: '#2D1B36',
+            background: '#1A1020',
           }}
         >
           <img
@@ -147,42 +147,39 @@ export const FakeGiftScreen: React.FC<FakeGiftScreenProps> = ({ onContinue }) =>
               width: '100%',
               height: '100%',
               objectFit: 'cover',
-              objectPosition: 'center 40%',
+              objectPosition: 'center 30%',
+              display: 'block',
             }}
           />
-          <div
-            style={{
-              position: 'absolute',
-              bottom: 0,
-              left: 0,
-              right: 0,
-              background: 'linear-gradient(to top, #1A1020, transparent)',
-              padding: '20px 16px 8px',
-            }}
-          >
-            <div
-              style={{
-                fontSize: '11px',
-                fontWeight: 800,
-                color: '#FFD6EA',
-                textTransform: 'uppercase',
-                letterSpacing: '0.08em',
-              }}
-            >
-              Спецпоказ с лучшими людьми
-            </div>
-          </div>
         </div>
 
         {/* Movie Info */}
         <div style={{ padding: '14px 18px 18px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          <div>
-            <div style={{ fontSize: '18px', fontWeight: 900, lineHeight: 1.2, color: '#FFD6EA' }}>
-              «Голодные игры» 🏹
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <div>
+              <div style={{ fontSize: '18px', fontWeight: 900, lineHeight: 1.2, color: '#FFD6EA' }}>
+                «Голодные игры» 🏹
+              </div>
+              <div style={{ fontSize: '12px', color: '#B39EB5', marginTop: '2px' }}>
+                Баллада о змеях и певчих птицах
+              </div>
             </div>
-            <div style={{ fontSize: '12px', color: '#B39EB5', marginTop: '2px' }}>
-              Баллада о змеях и певчих птицах
-            </div>
+            <span
+              style={{
+                fontSize: '10px',
+                fontWeight: 800,
+                color: '#FFD6EA',
+                background: 'rgba(224, 22, 122, 0.3)',
+                border: '1px solid #E0167A',
+                padding: '3px 8px',
+                borderRadius: '999px',
+                textTransform: 'uppercase',
+                letterSpacing: '0.06em',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              Спецпоказ
+            </span>
           </div>
 
           <div
@@ -353,3 +350,4 @@ export const FakeGiftScreen: React.FC<FakeGiftScreenProps> = ({ onContinue }) =>
     </div>
   );
 };
+

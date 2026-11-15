@@ -116,7 +116,7 @@ export const App: React.FC = () => {
       setAttempt(0);
       setScreen('question');
     } else {
-      setScreen('fake_gift');
+      setScreen('cake');
     }
   };
 
@@ -137,7 +137,7 @@ export const App: React.FC = () => {
         >
           <button
             type="button"
-            onClick={() => setScreen('fake_gift')}
+            onClick={() => setScreen('cake')}
             style={{
               background: 'rgba(26, 16, 32, 0.88)',
               color: '#FFD6EA',
@@ -191,6 +191,10 @@ export const App: React.FC = () => {
           <BeforeGiftScreen onOpen={() => setScreen('plane_shake')} />
         )}
 
+        {screen === 'cake' && (
+          <BirthdayCakeScreen onContinue={() => setScreen('fake_gift')} />
+        )}
+
         {screen === 'fake_gift' && (
           <FakeGiftScreen onContinue={() => setScreen('plane_shake')} />
         )}
@@ -200,11 +204,7 @@ export const App: React.FC = () => {
         )}
 
         {screen === 'parachute_drop' && (
-          <ParachuteDropScreen onViewTicket={() => setScreen('cake')} />
-        )}
-
-        {screen === 'cake' && (
-          <BirthdayCakeScreen onContinue={() => setScreen('ticket')} />
+          <ParachuteDropScreen onViewTicket={() => setScreen('ticket')} />
         )}
 
         {screen === 'ticket' && (

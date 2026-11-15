@@ -13,7 +13,7 @@ interface WelcomeScreenProps {
 export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
   onStart,
   savedQuestionIndex,
-  totalQuestions = 18,
+  totalQuestions = 19,
   onReset,
 }) => {
   return (

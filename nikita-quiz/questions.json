@@ -81,6 +81,14 @@
 
     { "id": 17, "type": "choice", "media": { "video": "assets/q17-video.mp4", "poster": "assets/q17-poster.jpg", "orientation": "portrait" },
       "question": "Где ты познакомился с этим человеком?",
-      "options": ["Grindr", "Badoo", "Tinder", "LinkedIn"], "correct": 2 }
+      "options": ["Grindr", "Badoo", "Tinder", "LinkedIn"], "correct": 2 },
+
+    { "id": 18, "type": "choice", "media": { "video": "assets/q18-video.mp4", "poster": "assets/q18-poster.jpg", "orientation": "landscape" },
+      "question": "Какая песня набрала рекордные 758 баллов — максимум за всю историю Евровидения?",
+      "options": ["Fairytale", "Amar pelos dois", "Tattoo", "1944"], "correct": 1 },
+
+    { "id": 19, "type": "choice", "media": { "photo": "assets/q19.jpg" },
+      "question": "С какого момента этот прекрасный человек перестал получать ответы на сообщения?",
+      "options": ["С мая", "С июня", "С июля", "С августа"], "correct": 2 }
   ]
 }

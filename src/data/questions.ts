@@ -207,6 +207,21 @@ export const questionsData: QuestionItem[] = [
     ],
     correct: 1,
     revealText: 'Именно! Salvador Sobral в 2017 году набрал 758 баллов — исторический рекорд Евровидения 🏆'
+  },
+  {
+    id: 19,
+    type: 'choice',
+    badge: 'дела сердечные',
+    media: { photo: '/assets/q19.jpg' },
+    question: 'С какого момента этот прекрасный человек перестал получать ответы на сообщения?',
+    options: [
+      'С мая',
+      'С июня',
+      'С июля',
+      'С августа'
+    ],
+    correct: 2,
+    revealText: 'Да, именно с июля… Прекрасный человек всё ещё ждёт ответ 💔'
   }
 ];
 

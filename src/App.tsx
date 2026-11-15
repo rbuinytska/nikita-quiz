@@ -122,6 +122,55 @@ export const App: React.FC = () => {
         {/* Floating background music controller */}
         <BackgroundMusic />
 
+        {/* Debug Quick Jump Bar */}
+        <div
+          style={{
+            position: 'fixed',
+            top: 'max(8px, env(safe-area-inset-top, 8px))',
+            right: '10px',
+            zIndex: 99999,
+            display: 'flex',
+            gap: '6px',
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => setScreen('cake')}
+            style={{
+              background: 'rgba(26, 16, 32, 0.88)',
+              color: '#FFD6EA',
+              border: '1.5px solid #E0167A',
+              borderRadius: '999px',
+              padding: '6px 11px',
+              fontSize: '11px',
+              fontWeight: 800,
+              cursor: 'pointer',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.25)',
+              backdropFilter: 'blur(8px)',
+            }}
+          >
+            🎂 К торту
+          </button>
+          <button
+            type="button"
+            onClick={() => setScreen('ticket')}
+            style={{
+              background: 'rgba(224, 22, 122, 0.92)',
+              color: '#FFFFFF',
+              border: '1.5px solid #FFFFFF',
+              borderRadius: '999px',
+              padding: '6px 11px',
+              fontSize: '11px',
+              fontWeight: 800,
+              cursor: 'pointer',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.25)',
+              backdropFilter: 'blur(8px)',
+            }}
+          >
+            🪂 К подарку
+          </button>
+        </div>
+
         {screen === 'welcome' && (
           <WelcomeScreen
             onStart={() => setScreen('question')}

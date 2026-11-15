@@ -27,8 +27,8 @@ export const TicketScreen: React.FC<TicketScreenProps> = ({ onRestart, onShowCak
     if (navigator.share) {
       try {
         await navigator.share({
-          title: `С днюхой, Никита! Ты прыгаешь с парашютом!`,
-          text: `Никита успешно прошёл квиз на 23 года и получил билет на прыжок с парашютом! 🪂`,
+          title: `С днюхой, Никита! 🎂 Квиз на 23 года`,
+          text: `Праздничный квиз для Никиты на 23 года! Пройди все вопросы и открой секретный подарок ✨`,
           url: window.location.href,
         });
         return;

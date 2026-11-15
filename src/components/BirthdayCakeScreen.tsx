@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
 import { StageBackground } from './StageBackground';
+import { assetUrl } from '../utils/assets';
 
 interface BirthdayCakeScreenProps {
   onContinue: () => void;
@@ -265,25 +266,24 @@ export const BirthdayCakeScreen: React.FC<BirthdayCakeScreenProps> = ({ onContin
 
           {/* ================= DANCING GUY ON TOP OF CAKE ================= */}
           <g style={{ transformOrigin: '170px 195px', animation: 'dudeDance 0.6s infinite ease-in-out' }}>
-            {/* Party Hat */}
-            <polygon points="163,38 177,38 170,12" fill="#E0167A" stroke="#1A1020" strokeWidth="2" />
-            <circle cx="170" cy="10" r="4" fill="#FBBF24" />
-            <circle cx="168" cy="24" r="2" fill="#FFFFFF" />
-            <circle cx="173" cy="30" r="2" fill="#7FC8F8" />
+            {/* Real Head Photo */}
+            <image
+              href={assetUrl('assets/stripper-face.png')}
+              x="146"
+              y="32"
+              width="48"
+              height="48"
+              preserveAspectRatio="xMidYMid slice"
+            />
 
-            {/* Head */}
-            <circle cx="170" cy="54" r="16" fill="#FDE047" stroke="#1A1020" strokeWidth="3" />
-            {/* Smiling happy face */}
-            <circle cx="165" cy="51" r="2.2" fill="#1A1020" />
-            <circle cx="175" cy="51" r="2.2" fill="#1A1020" />
-            {/* Wink / Cheek blush */}
-            <circle cx="162" cy="56" r="2.5" fill="#F43F5E" opacity="0.6" />
-            <circle cx="178" cy="56" r="2.5" fill="#F43F5E" opacity="0.6" />
-            {/* Big Smile */}
-            <path d="M165 56 Q170 63 175 56" stroke="#1A1020" strokeWidth="2.2" fill="none" strokeLinecap="round" />
+            {/* Party Hat on top of head */}
+            <polygon points="163,34 177,34 170,8" fill="#E0167A" stroke="#1A1020" strokeWidth="2" />
+            <circle cx="170" cy="6" r="4" fill="#FBBF24" />
+            <circle cx="168" cy="20" r="2" fill="#FFFFFF" />
+            <circle cx="173" cy="26" r="2" fill="#7FC8F8" />
 
             {/* Torso */}
-            <line x1="170" y1="70" x2="170" y2="120" stroke="#1A1020" strokeWidth="4.5" strokeLinecap="round" />
+            <line x1="170" y1="78" x2="170" y2="120" stroke="#1A1020" strokeWidth="4.5" strokeLinecap="round" />
 
             {/* Left Arm (dancing in the air) */}
             <g style={{ transformOrigin: '170px 78px', animation: 'armLeft 0.6s infinite ease-in-out' }}>
@@ -414,3 +414,4 @@ export const BirthdayCakeScreen: React.FC<BirthdayCakeScreenProps> = ({ onContin
     </div>
   );
 };
+

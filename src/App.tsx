@@ -8,6 +8,7 @@ import { BeforeGiftScreen } from './components/BeforeGiftScreen';
 import { PlaneShakeScreen } from './components/PlaneShakeScreen';
 import { ParachuteDropScreen } from './components/ParachuteDropScreen';
 import { BirthdayCakeScreen } from './components/BirthdayCakeScreen';
+import { FakeGiftScreen } from './components/FakeGiftScreen';
 import { TicketScreen } from './components/TicketScreen';
 import { BackgroundMusic } from './components/BackgroundMusic';
 
@@ -112,7 +113,7 @@ export const App: React.FC = () => {
       setAttempt(0);
       setScreen('question');
     } else {
-      setScreen('before_gift');
+      setScreen('cake');
     }
   };
 
@@ -129,8 +130,6 @@ export const App: React.FC = () => {
             top: 'max(8px, env(safe-area-inset-top, 8px))',
             right: '10px',
             zIndex: 99999,
-            display: 'flex',
-            gap: '6px',
           }}
         >
           <button
@@ -141,7 +140,7 @@ export const App: React.FC = () => {
               color: '#FFD6EA',
               border: '1.5px solid #E0167A',
               borderRadius: '999px',
-              padding: '6px 11px',
+              padding: '6px 12px',
               fontSize: '11px',
               fontWeight: 800,
               cursor: 'pointer',
@@ -149,25 +148,7 @@ export const App: React.FC = () => {
               backdropFilter: 'blur(8px)',
             }}
           >
-            🎂 К торту
-          </button>
-          <button
-            type="button"
-            onClick={() => setScreen('ticket')}
-            style={{
-              background: 'rgba(224, 22, 122, 0.92)',
-              color: '#FFFFFF',
-              border: '1.5px solid #FFFFFF',
-              borderRadius: '999px',
-              padding: '6px 11px',
-              fontSize: '11px',
-              fontWeight: 800,
-              cursor: 'pointer',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.25)',
-              backdropFilter: 'blur(8px)',
-            }}
-          >
-            🪂 К подарку
+            🏁 К концу квиза
           </button>
         </div>
 
@@ -207,16 +188,20 @@ export const App: React.FC = () => {
           <BeforeGiftScreen onOpen={() => setScreen('plane_shake')} />
         )}
 
+        {screen === 'cake' && (
+          <BirthdayCakeScreen onContinue={() => setScreen('fake_gift')} />
+        )}
+
+        {screen === 'fake_gift' && (
+          <FakeGiftScreen onContinue={() => setScreen('plane_shake')} />
+        )}
+
         {screen === 'plane_shake' && (
           <PlaneShakeScreen onFinish={() => setScreen('parachute_drop')} />
         )}
 
         {screen === 'parachute_drop' && (
-          <ParachuteDropScreen onViewTicket={() => setScreen('cake')} />
-        )}
-
-        {screen === 'cake' && (
-          <BirthdayCakeScreen onContinue={() => setScreen('ticket')} />
+          <ParachuteDropScreen onViewTicket={() => setScreen('ticket')} />
         )}
 
         {screen === 'ticket' && (

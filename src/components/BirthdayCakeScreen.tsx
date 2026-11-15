@@ -132,7 +132,7 @@ export const BirthdayCakeScreen: React.FC<BirthdayCakeScreenProps> = ({ onContin
           Никите <span style={{ color: '#E0167A' }}>23 года!</span>
         </h1>
         <p style={{ margin: 0, fontSize: '14px', fontWeight: 600, color: '#5C3A4E' }}>
-          {wished ? '✨ Желание отправлено во Вселенную!' : 'Танец в честь главного именинника!'}
+          {wished ? '✨ Желание отправлено во Вселенную!' : 'Праздничный дуэт в честь главного именинника!'}
         </p>
       </div>
 
@@ -264,12 +264,12 @@ export const BirthdayCakeScreen: React.FC<BirthdayCakeScreenProps> = ({ onContin
             )}
           </g>
 
-          {/* ================= DANCING GUY ON TOP OF CAKE ================= */}
-          <g style={{ transformOrigin: '170px 195px', animation: 'dudeDance 0.6s infinite ease-in-out' }}>
+          {/* ================= DANCING GUY 1 (Dark hair) ================= */}
+          <g style={{ transformOrigin: '130px 195px', animation: 'dudeDance 0.6s infinite ease-in-out' }}>
             {/* Real Head Photo */}
             <image
               href={assetUrl('assets/stripper-face.png')}
-              x="146"
+              x="106"
               y="32"
               width="48"
               height="48"
@@ -277,55 +277,104 @@ export const BirthdayCakeScreen: React.FC<BirthdayCakeScreenProps> = ({ onContin
             />
 
             {/* Party Hat on top of head */}
-            <polygon points="163,34 177,34 170,8" fill="#E0167A" stroke="#1A1020" strokeWidth="2" />
-            <circle cx="170" cy="6" r="4" fill="#FBBF24" />
-            <circle cx="168" cy="20" r="2" fill="#FFFFFF" />
-            <circle cx="173" cy="26" r="2" fill="#7FC8F8" />
+            <polygon points="123,34 137,34 130,8" fill="#E0167A" stroke="#1A1020" strokeWidth="2" />
+            <circle cx="130" cy="6" r="4" fill="#FBBF24" />
+            <circle cx="128" cy="20" r="2" fill="#FFFFFF" />
+            <circle cx="133" cy="26" r="2" fill="#7FC8F8" />
 
             {/* Torso */}
-            <line x1="170" y1="78" x2="170" y2="120" stroke="#1A1020" strokeWidth="4.5" strokeLinecap="round" />
+            <line x1="130" y1="78" x2="130" y2="120" stroke="#1A1020" strokeWidth="4.5" strokeLinecap="round" />
 
-            {/* Left Arm (dancing in the air) */}
-            <g style={{ transformOrigin: '170px 78px', animation: 'armLeft 0.6s infinite ease-in-out' }}>
-              <path d="M170 78 L142 62 L132 40" stroke="#1A1020" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-              <circle cx="132" cy="40" r="4" fill="#FDE047" stroke="#1A1020" strokeWidth="2" />
+            {/* Left Arm */}
+            <g style={{ transformOrigin: '130px 78px', animation: 'armLeft 0.6s infinite ease-in-out' }}>
+              <path d="M130 78 L104 62 L96 40" stroke="#1A1020" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+              <circle cx="96" cy="40" r="4" fill="#FDE047" stroke="#1A1020" strokeWidth="2" />
             </g>
 
-            {/* Right Arm (dancing in the air) */}
-            <g style={{ transformOrigin: '170px 78px', animation: 'armRight 0.6s infinite ease-in-out' }}>
-              <path d="M170 78 L198 62 L208 40" stroke="#1A1020" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-              <circle cx="208" cy="40" r="4" fill="#FDE047" stroke="#1A1020" strokeWidth="2" />
+            {/* Right Arm */}
+            <g style={{ transformOrigin: '130px 78px', animation: 'armRight 0.6s infinite ease-in-out' }}>
+              <path d="M130 78 L156 62 L164 40" stroke="#1A1020" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+              <circle cx="164" cy="40" r="4" fill="#FDE047" stroke="#1A1020" strokeWidth="2" />
             </g>
 
-            {/* Legs */}
             {/* Left Leg */}
-            <g style={{ transformOrigin: '170px 120px', animation: 'legLeft 0.6s infinite ease-in-out' }}>
-              <path d="M170 120 L150 155 L144 190" stroke="#1A1020" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-              <ellipse cx="140" cy="190" rx="8" ry="4" fill="#E0167A" stroke="#1A1020" strokeWidth="2" />
+            <g style={{ transformOrigin: '130px 120px', animation: 'legLeft 0.6s infinite ease-in-out' }}>
+              <path d="M130 120 L112 155 L108 190" stroke="#1A1020" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+              <ellipse cx="104" cy="190" rx="8" ry="4" fill="#E0167A" stroke="#1A1020" strokeWidth="2" />
             </g>
 
             {/* Right Leg */}
-            <g style={{ transformOrigin: '170px 120px', animation: 'legRight 0.6s infinite ease-in-out' }}>
-              <path d="M170 120 L190 155 L196 190" stroke="#1A1020" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-              <ellipse cx="200" cy="190" rx="8" ry="4" fill="#E0167A" stroke="#1A1020" strokeWidth="2" />
+            <g style={{ transformOrigin: '130px 120px', animation: 'legRight 0.6s infinite ease-in-out' }}>
+              <path d="M130 120 L148 155 L152 190" stroke="#1A1020" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+              <ellipse cx="156" cy="190" rx="8" ry="4" fill="#E0167A" stroke="#1A1020" strokeWidth="2" />
             </g>
 
-            {/* ================= THE PEEN (Swinging to the beat) ================= */}
-            <g style={{ transformOrigin: '170px 122px', animation: 'peenWiggle 0.6s infinite ease-in-out' }}>
-              {/* Balls */}
-              <circle cx="165" cy="123" r="5.5" fill="#FBCFE8" stroke="#1A1020" strokeWidth="2" />
-              <circle cx="175" cy="123" r="5.5" fill="#FBCFE8" stroke="#1A1020" strokeWidth="2" />
+            {/* Swinging Peen */}
+            <g style={{ transformOrigin: '130px 122px', animation: 'peenWiggle 0.6s infinite ease-in-out' }}>
+              <circle cx="125" cy="123" r="5.5" fill="#FBCFE8" stroke="#1A1020" strokeWidth="2" />
+              <circle cx="135" cy="123" r="5.5" fill="#FBCFE8" stroke="#1A1020" strokeWidth="2" />
+              <rect x="126" y="123" width="8" height="24" rx="4" fill="#F472B6" stroke="#1A1020" strokeWidth="2" />
+              <ellipse cx="130" cy="148" rx="6" ry="5.5" fill="#FB7185" stroke="#1A1020" strokeWidth="2" />
+              <line x1="130" y1="145" x2="130" y2="150" stroke="#1A1020" strokeWidth="1.5" />
+              <path d="M116 138 Q118 144 116 150" stroke="#E0167A" strokeWidth="1.8" fill="none" strokeLinecap="round" />
+              <path d="M144 138 Q142 144 144 150" stroke="#E0167A" strokeWidth="1.8" fill="none" strokeLinecap="round" />
+            </g>
+          </g>
 
-              {/* Shaft */}
-              <rect x="166" y="123" width="8" height="24" rx="4" fill="#F472B6" stroke="#1A1020" strokeWidth="2" />
+          {/* ================= DANCING GUY 2 (Blonde boy) ================= */}
+          <g style={{ transformOrigin: '210px 195px', animation: 'dudeDance 0.6s infinite ease-in-out', animationDelay: '-0.3s' }}>
+            {/* Real Head Photo */}
+            <image
+              href={assetUrl('assets/stripper-face-2.png')}
+              x="186"
+              y="32"
+              width="48"
+              height="48"
+              preserveAspectRatio="xMidYMid slice"
+            />
 
-              {/* Head */}
-              <ellipse cx="170" cy="148" rx="6" ry="5.5" fill="#FB7185" stroke="#1A1020" strokeWidth="2" />
-              <line x1="170" y1="145" x2="170" y2="150" stroke="#1A1020" strokeWidth="1.5" />
+            {/* Party Hat on top of head */}
+            <polygon points="203,34 217,34 210,8" fill="#7FC8F8" stroke="#1A1020" strokeWidth="2" />
+            <circle cx="210" cy="6" r="4" fill="#FBBF24" />
+            <circle cx="208" cy="20" r="2" fill="#FFFFFF" />
+            <circle cx="213" cy="26" r="2" fill="#E0167A" />
 
-              {/* Motion lines around swinging peen */}
-              <path d="M156 138 Q158 144 156 150" stroke="#E0167A" strokeWidth="1.8" fill="none" strokeLinecap="round" />
-              <path d="M184 138 Q182 144 184 150" stroke="#E0167A" strokeWidth="1.8" fill="none" strokeLinecap="round" />
+            {/* Torso */}
+            <line x1="210" y1="78" x2="210" y2="120" stroke="#1A1020" strokeWidth="4.5" strokeLinecap="round" />
+
+            {/* Left Arm */}
+            <g style={{ transformOrigin: '210px 78px', animation: 'armLeft 0.6s infinite ease-in-out', animationDelay: '-0.3s' }}>
+              <path d="M210 78 L184 62 L176 40" stroke="#1A1020" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+              <circle cx="176" cy="40" r="4" fill="#FDE047" stroke="#1A1020" strokeWidth="2" />
+            </g>
+
+            {/* Right Arm */}
+            <g style={{ transformOrigin: '210px 78px', animation: 'armRight 0.6s infinite ease-in-out', animationDelay: '-0.3s' }}>
+              <path d="M210 78 L236 62 L244 40" stroke="#1A1020" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+              <circle cx="244" cy="40" r="4" fill="#FDE047" stroke="#1A1020" strokeWidth="2" />
+            </g>
+
+            {/* Left Leg */}
+            <g style={{ transformOrigin: '210px 120px', animation: 'legLeft 0.6s infinite ease-in-out', animationDelay: '-0.3s' }}>
+              <path d="M210 120 L192 155 L188 190" stroke="#1A1020" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+              <ellipse cx="184" cy="190" rx="8" ry="4" fill="#7FC8F8" stroke="#1A1020" strokeWidth="2" />
+            </g>
+
+            {/* Right Leg */}
+            <g style={{ transformOrigin: '210px 120px', animation: 'legRight 0.6s infinite ease-in-out', animationDelay: '-0.3s' }}>
+              <path d="M210 120 L228 155 L232 190" stroke="#1A1020" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+              <ellipse cx="236" cy="190" rx="8" ry="4" fill="#7FC8F8" stroke="#1A1020" strokeWidth="2" />
+            </g>
+
+            {/* Swinging Peen */}
+            <g style={{ transformOrigin: '210px 122px', animation: 'peenWiggle 0.6s infinite ease-in-out', animationDelay: '-0.3s' }}>
+              <circle cx="205" cy="123" r="5.5" fill="#FBCFE8" stroke="#1A1020" strokeWidth="2" />
+              <circle cx="215" cy="123" r="5.5" fill="#FBCFE8" stroke="#1A1020" strokeWidth="2" />
+              <rect x="206" y="123" width="8" height="24" rx="4" fill="#F472B6" stroke="#1A1020" strokeWidth="2" />
+              <ellipse cx="210" cy="148" rx="6" ry="5.5" fill="#FB7185" stroke="#1A1020" strokeWidth="2" />
+              <line x1="210" y1="145" x2="210" y2="150" stroke="#1A1020" strokeWidth="1.5" />
+              <path d="M196 138 Q198 144 196 150" stroke="#7FC8F8" strokeWidth="1.8" fill="none" strokeLinecap="round" />
+              <path d="M224 138 Q222 144 224 150" stroke="#7FC8F8" strokeWidth="1.8" fill="none" strokeLinecap="round" />
             </g>
           </g>
         </svg>

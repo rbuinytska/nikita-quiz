@@ -222,6 +222,25 @@ export const questionsData: QuestionItem[] = [
     ],
     correct: 2,
     revealText: 'Да, именно с июля… Прекрасный человек всё ещё ждёт ответ 💔'
+  },
+  {
+    id: 20,
+    type: 'choice',
+    badge: 'караоке',
+    media: {
+      video: '/assets/q20-video.mp4',
+      poster: '/assets/q20-poster.jpg',
+      orientation: 'portrait'
+    },
+    question: 'Какая вещь осталась на память после этого вечера?',
+    options: [
+      'Микрофон',
+      'Чек из бара',
+      'Браслет',
+      'Видеозапись'
+    ],
+    correct: 0,
+    revealText: 'Именно эта вещь осталась на долгую память! 🎤'
   }
 ];
 

@@ -89,6 +89,10 @@
 
     { "id": 19, "type": "choice", "media": { "photo": "assets/q19.jpg" },
       "question": "С какого момента этот прекрасный человек перестал получать ответы на сообщения?",
-      "options": ["С мая", "С июня", "С июля", "С августа"], "correct": 2 }
+      "options": ["С мая", "С июня", "С июля", "С августа"], "correct": 2 },
+
+    { "id": 20, "type": "choice", "media": { "video": "assets/q20-video.mp4", "poster": "assets/q20-poster.jpg", "orientation": "portrait" },
+      "question": "Какая вещь осталась на память после этого вечера?",
+      "options": ["Микрофон", "Чек из бара", "Браслет", "Видеозапись"], "correct": 0 }
   ]
 }

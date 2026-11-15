@@ -24,6 +24,7 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   // Local state for various question types
   const [textInput, setTextInput] = useState('');
@@ -50,6 +51,21 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
       setIsMediaLoaded(true);
     }
   }, [question.id]);
+
+  // Autoplay video questions automatically
+  useEffect(() => {
+    if (question.media?.video && videoRef.current) {
+      const vid = videoRef.current;
+      vid.currentTime = 0;
+      const playPromise = vid.play();
+      if (playPromise !== undefined) {
+        playPromise.catch((err) => {
+          // Autoplay policy prevented playback, controls remain available for user tap
+          console.log('Video autoplay prevented:', err);
+        });
+      }
+    }
+  }, [question.id, question.media?.video]);
 
   // Preload next 2 question media items (images, posters, and videos) in background for instant loading
   useEffect(() => {
@@ -342,12 +358,17 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
 
           {question.media.video ? (
             <video
+              ref={videoRef}
               src={assetUrl(question.media.video)}
               poster={assetUrl(question.media.poster)}
               controls
+              autoPlay
               playsInline
-              preload="metadata"
-              onLoadedData={() => setIsMediaLoaded(true)}
+              preload="auto"
+              onLoadedData={() => {
+                setIsMediaLoaded(true);
+                videoRef.current?.play().catch(() => {});
+              }}
               style={{
                 display: 'block',
                 width: '100%',
